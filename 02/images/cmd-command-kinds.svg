@@ -1,0 +1,493 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="467.11588mm"
+   height="175.45534mm"
+   viewBox="0 0 467.11589 175.45534"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   sodipodi:docname="cmd-command-kinds.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.76167929"
+     inkscape:cx="836.96644"
+     inkscape:cy="352.51057"
+     inkscape:window-width="2456"
+     inkscape:window-height="1017"
+     inkscape:window-x="781"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <marker
+       style="overflow:visible"
+       id="ConcaveTriangle"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path7" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ConcaveTriangle-4"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path7-8" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ConcaveTriangle-3"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path7-2" />
+    </marker>
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(53.692396,17.62299)">
+    <ellipse
+       style="fill:#ffd5d5;stroke:none;stroke-width:0.829;stroke-dasharray:none"
+       id="ellipse30"
+       cx="45.604103"
+       cy="132.94609"
+       rx="30.942793"
+       ry="13.447915" />
+    <ellipse
+       style="fill:#ffd5d5;stroke:none;stroke-width:0.829;stroke-dasharray:none"
+       id="ellipse1"
+       cx="-22.749603"
+       cy="132.94609"
+       rx="30.942793"
+       ry="13.447915" />
+    <path
+       style="fill:#1a1a1a;stroke:#1a1a1a;stroke-width:0.829;stroke-dasharray:none;marker-end:url(#ConcaveTriangle-4)"
+       d="m 20.185163,102.64318 -28.3253959,20.341"
+       id="path36"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:8.46667px;line-height:normal;font-family:'Book Antiqua';-inkscape-font-specification:'Book Antiqua';text-align:center;text-decoration-color:#000000;writing-mode:lr-tb;direction:ltr;text-anchor:middle;white-space:pre;fill:#1a1a1a;stroke-width:0.529167"
+       x="46.934776"
+       y="135.85777"
+       id="text30"><tspan
+         sodipodi:role="line"
+         id="tspan30"
+         style="fill:#1a1a1a;stroke-width:0.529167"
+         x="46.934776"
+         y="135.85777">Jumps</tspan></text>
+    <path
+       style="fill:#1a1a1a;stroke:#1a1a1a;stroke-width:0.829;stroke-dasharray:none;marker-end:url(#ConcaveTriangle-4)"
+       d="m 37.583649,101.75331 6.441185,22.07784"
+       id="path37"
+       sodipodi:nodetypes="cc" />
+    <ellipse
+       style="fill:#ffd5d5;stroke:none;stroke-width:0.829;stroke-dasharray:none"
+       id="ellipse27"
+       cx="29.842661"
+       cy="98.013664"
+       rx="30.942793"
+       ry="13.447915" />
+    <ellipse
+       style="fill:#ffd5d5;stroke:none;stroke-width:0.829;stroke-dasharray:none"
+       id="ellipse26"
+       cx="95.52121"
+       cy="97.188972"
+       rx="30.942793"
+       ry="13.447915" />
+    <ellipse
+       style="fill:#ffd5d5;stroke:none;stroke-width:0.887365;stroke-dasharray:none"
+       id="ellipse25"
+       cx="245.8951"
+       cy="98.383423"
+       rx="35.453159"
+       ry="13.447915" />
+    <ellipse
+       style="fill:#ffd5d5;stroke:none;stroke-width:0.925728;stroke-dasharray:none"
+       id="ellipse24"
+       cx="169.7404"
+       cy="97.854256"
+       rx="38.5849"
+       ry="13.447915" />
+    <path
+       style="fill:#1a1a1a;stroke:#1a1a1a;stroke-width:0.829;stroke-dasharray:none;marker-end:url(#ConcaveTriangle-4)"
+       d="M 85.837795,69.643184 39.449241,86.857866"
+       id="path4-2"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:#1a1a1a;stroke:#1a1a1a;stroke-width:0.829;stroke-dasharray:none;marker-end:url(#ConcaveTriangle-4)"
+       d="m 92.141485,69.643184 2.489048,11.13836"
+       id="path6"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:#1a1a1a;stroke:#1a1a1a;stroke-width:0.829;stroke-dasharray:none;marker-end:url(#ConcaveTriangle-4)"
+       d="M 184.4792,70.134437 170.99847,89.810128"
+       id="path11"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:#1a1a1a;stroke:#1a1a1a;stroke-width:0.829;stroke-dasharray:none;marker-end:url(#ConcaveTriangle-4)"
+       d="m 195.65895,69.643184 40.53786,15.805265"
+       id="path13"
+       sodipodi:nodetypes="cc" />
+    <ellipse
+       style="fill:#ffd5d5;stroke:none;stroke-width:0.829;stroke-dasharray:none"
+       id="ellipse23"
+       cx="184.33678"
+       cy="65.099701"
+       rx="30.942793"
+       ry="13.447915" />
+    <ellipse
+       style="fill:#ffd5d5;stroke:none;stroke-width:0.829;stroke-dasharray:none"
+       id="ellipse22"
+       cx="87.564903"
+       cy="65.099701"
+       rx="30.942793"
+       ry="13.447915" />
+    <path
+       style="fill:#1a1a1a;stroke:#1a1a1a;stroke-width:0.829;stroke-dasharray:none;marker-end:url(#ConcaveTriangle)"
+       d="M 127.96462,43.31931 96.695734,59.984268"
+       id="path4"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:#1a1a1a;stroke:#1a1a1a;stroke-width:0.829;stroke-dasharray:none;marker-end:url(#ConcaveTriangle)"
+       d="m 150.57967,43.31931 31.26888,16.664958"
+       id="path10"
+       sodipodi:nodetypes="cc" />
+    <ellipse
+       style="fill:#ffd5d5;stroke:none;stroke-width:0.929886;stroke-dasharray:none"
+       id="path22"
+       cx="138.97543"
+       cy="38.203873"
+       rx="38.932266"
+       ry="13.447915" />
+    <text
+       xml:space="preserve"
+       style="font-size:8.46667px;line-height:normal;font-family:'Book Antiqua';-inkscape-font-specification:'Book Antiqua';text-align:center;text-decoration-color:#000000;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;stroke-width:0.330729"
+       x="47.936844"
+       y="119.14737"
+       id="text1"><tspan
+         sodipodi:role="line"
+         id="tspan1"
+         style="stroke-width:0.330729"
+         x="47.936844"
+         y="119.14737" /></text>
+    <text
+       xml:space="preserve"
+       style="font-size:8.46667px;line-height:normal;font-family:'Book Antiqua';-inkscape-font-specification:'Book Antiqua';text-align:center;text-decoration-color:#000000;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;stroke:none;stroke-width:0.330729"
+       x="49.326317"
+       y="157.35789"
+       id="text3"><tspan
+         sodipodi:role="line"
+         id="tspan3"
+         style="stroke-width:0.330729"
+         x="49.326317"
+         y="157.35789" /></text>
+    <text
+       xml:space="preserve"
+       style="font-size:8.46667px;line-height:normal;font-family:'Book Antiqua';-inkscape-font-specification:'Book Antiqua';text-align:center;text-decoration-color:#000000;writing-mode:lr-tb;direction:ltr;text-anchor:middle;white-space:pre;fill:#999999;stroke-width:0.529167"
+       x="138.25262"
+       y="40.989475"
+       id="text2"><tspan
+         sodipodi:role="line"
+         id="tspan2"
+         style="fill:#999999;stroke-width:0.529167"
+         x="138.25262"
+         y="40.989475">Basic command</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:8.46667px;line-height:normal;font-family:'Book Antiqua';-inkscape-font-specification:'Book Antiqua';text-align:center;text-decoration-color:#000000;writing-mode:lr-tb;direction:ltr;text-anchor:middle;white-space:pre;fill:#999999;stroke-width:0.529167"
+       x="87.884216"
+       y="67.736839"
+       id="text4"><tspan
+         sodipodi:role="line"
+         id="tspan4"
+         style="fill:#999999;stroke-width:0.529167"
+         x="87.884216"
+         y="67.736839">Internal</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:8.46667px;line-height:normal;font-family:'Book Antiqua';-inkscape-font-specification:'Book Antiqua';text-align:center;text-decoration-color:#000000;writing-mode:lr-tb;direction:ltr;text-anchor:middle;white-space:pre;fill:#999999;stroke-width:0.529167"
+       x="184.72125"
+       y="67.736839"
+       id="text5"><tspan
+         sodipodi:role="line"
+         id="tspan5"
+         style="fill:#999999;stroke-width:0.529167"
+         x="184.72125"
+         y="67.736839">External</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:5.64444px;line-height:normal;font-family:'Book Antiqua';-inkscape-font-specification:'Book Antiqua';text-align:center;text-decoration-color:#000000;writing-mode:lr-tb;direction:ltr;text-anchor:middle;white-space:pre;fill:#1a1a1a;stroke-width:0.529167"
+       x="95.990936"
+       y="117.18899"
+       id="text6"><tspan
+         sodipodi:role="line"
+         style="font-style:italic;font-size:5.64444px;fill:#1a1a1a;stroke-width:0.529167"
+         x="95.990936"
+         y="117.18899"
+         id="tspan10">Verb + args syntax</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:8.46667px;line-height:normal;font-family:'Book Antiqua';-inkscape-font-specification:'Book Antiqua';text-align:center;text-decoration-color:#000000;writing-mode:lr-tb;direction:ltr;text-anchor:middle;white-space:pre;fill:#1a1a1a;stroke-width:0.529167"
+       x="95.540817"
+       y="93.591927"
+       id="text7"><tspan
+         sodipodi:role="line"
+         id="tspan7"
+         style="fill:#1a1a1a;stroke-width:0.529167"
+         x="95.540817"
+         y="93.591927">“Doer”</tspan><tspan
+         sodipodi:role="line"
+         style="fill:#1a1a1a;stroke-width:0.529167"
+         x="95.540817"
+         y="104.17526"
+         id="tspan15">commands</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:8.46667px;line-height:normal;font-family:'Book Antiqua';-inkscape-font-specification:'Book Antiqua';text-align:center;text-decoration-color:#000000;writing-mode:lr-tb;direction:ltr;text-anchor:middle;white-space:pre;fill:#999999;stroke-width:0.529167"
+       x="31.173332"
+       y="94.575432"
+       id="text8"><tspan
+         sodipodi:role="line"
+         id="tspan8"
+         style="fill:#999999;stroke-width:0.529167"
+         x="31.173332"
+         y="94.575432">Flow</tspan><tspan
+         sodipodi:role="line"
+         style="fill:#999999;stroke-width:0.529167"
+         x="31.173332"
+         y="105.15877"
+         id="tspan35">control</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.46667px;line-height:normal;font-family:'Book Antiqua';-inkscape-font-specification:'Book Antiqua Bold';text-align:center;text-decoration-color:#000000;writing-mode:lr-tb;direction:ltr;text-anchor:middle;white-space:pre;fill:#0000ff;stroke-width:0.529167"
+       x="170.793"
+       y="99.412766"
+       id="text11"><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Book Antiqua';-inkscape-font-specification:'Book Antiqua Bold';fill:#0000ff;stroke-width:0.529167"
+         x="170.793"
+         y="99.412766"
+         id="tspan12">Run a program</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:8.46667px;line-height:normal;font-family:'Book Antiqua';-inkscape-font-specification:'Book Antiqua';text-align:center;text-decoration-color:#000000;writing-mode:lr-tb;direction:ltr;text-anchor:middle;white-space:pre;fill:#1a1a1a;stroke-width:0.529167"
+       x="244.7869"
+       y="94.650261"
+       id="text13"><tspan
+         sodipodi:role="line"
+         id="tspan13"
+         style="fill:#1a1a1a;stroke-width:0.529167"
+         x="244.7869"
+         y="94.650261">Open a file</tspan><tspan
+         sodipodi:role="line"
+         style="fill:#1a1a1a;stroke-width:0.529167"
+         x="244.7869"
+         y="105.2336"
+         id="tspan14">via association</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:5.64444px;line-height:normal;font-family:'Book Antiqua';-inkscape-font-specification:'Book Antiqua';text-align:center;text-decoration-color:#000000;writing-mode:lr-tb;direction:ltr;text-anchor:middle;white-space:pre;fill:#1a1a1a;stroke-width:0.529167"
+       x="96.92334"
+       y="124.38828"
+       id="text18"><tspan
+         sodipodi:role="line"
+         id="tspan18"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.64444px;font-family:Consolas;-inkscape-font-specification:Consolas;fill:#1a1a1a;stroke-width:0.529167"
+         x="96.92334"
+         y="124.38828">cd<tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Book Antiqua';-inkscape-font-specification:'Book Antiqua'"
+   id="tspan20">, </tspan>set, ...</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:5.64444px;line-height:normal;font-family:'Book Antiqua';-inkscape-font-specification:'Book Antiqua';text-align:center;text-decoration-color:#000000;writing-mode:lr-tb;direction:ltr;text-anchor:middle;white-space:pre;fill:#1a1a1a;stroke-width:0.529167"
+       x="169.12401"
+       y="124.63496"
+       id="text22"><tspan
+         sodipodi:role="line"
+         id="tspan22"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.64444px;font-family:Consolas;-inkscape-font-specification:Consolas;fill:#1a1a1a;stroke-width:0.529167"
+         x="169.12401"
+         y="124.63496">subst, ...</tspan></text>
+    <path
+       style="fill:#ffd5d5;stroke:none;stroke-width:0.829;stroke-dasharray:none"
+       d="M 138.97543,9.2728402 V 24.755958"
+       id="path28" />
+    <path
+       style="font-variation-settings:normal;opacity:1;vector-effect:none;fill:#1a1a1a;fill-opacity:1;stroke:#1a1a1a;stroke-width:0.829;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;marker-end:url(#ConcaveTriangle);stop-color:#000000;stop-opacity:1"
+       d="M 138.97543,5.8340686 V 28.93161"
+       id="path29"
+       sodipodi:nodetypes="cc" />
+    <ellipse
+       style="fill:#ffd5d5;stroke:none;stroke-width:1.04697;stroke-dasharray:none"
+       id="ellipse29"
+       cx="364.07016"
+       cy="38.203873"
+       rx="49.353317"
+       ry="13.447915" />
+    <text
+       xml:space="preserve"
+       style="font-size:8.46667px;line-height:normal;font-family:'Book Antiqua';-inkscape-font-specification:'Book Antiqua';text-align:center;text-decoration-color:#000000;writing-mode:lr-tb;direction:ltr;text-anchor:middle;white-space:pre;fill:#1a1a1a;stroke-width:0.529167"
+       x="363.34735"
+       y="40.989475"
+       id="text29"><tspan
+         sodipodi:role="line"
+         id="tspan29"
+         style="fill:#1a1a1a;stroke-width:0.529167"
+         x="363.34735"
+         y="40.989475">Compound command</tspan></text>
+    <path
+       style="fill:#1a1a1a;stroke:#1a1a1a;stroke-width:0.829;stroke-dasharray:none;marker-end:url(#ConcaveTriangle-3)"
+       d="M 153.32903,2.4195577 333.55494,33.148515"
+       id="path10-1"
+       sodipodi:nodetypes="cc" />
+    <ellipse
+       style="fill:#ffd5d5;stroke:none;stroke-width:0.829;stroke-dasharray:none"
+       id="ellipse28"
+       cx="138.97543"
+       cy="-4.1750751"
+       rx="30.942793"
+       ry="13.447915" />
+    <text
+       xml:space="preserve"
+       style="font-size:8.46667px;line-height:normal;font-family:'Book Antiqua';-inkscape-font-specification:'Book Antiqua';text-align:center;text-decoration-color:#000000;writing-mode:lr-tb;direction:ltr;text-anchor:middle;white-space:pre;fill:#999999;stroke-width:0.529167"
+       x="138.25262"
+       y="-1.3894722"
+       id="text28"><tspan
+         sodipodi:role="line"
+         id="tspan28"
+         style="fill:#999999;stroke-width:0.529167"
+         x="138.25262"
+         y="-1.3894722">Command</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:5.64444px;line-height:normal;font-family:'Book Antiqua';-inkscape-font-specification:'Book Antiqua';text-align:center;text-decoration-color:#000000;writing-mode:lr-tb;direction:ltr;text-anchor:middle;white-space:pre;fill:#1a1a1a;stroke-width:0.529167"
+       x="169.98041"
+       y="117.18899"
+       id="text12"><tspan
+         sodipodi:role="line"
+         style="font-style:italic;font-size:5.64444px;fill:#1a1a1a;stroke-width:0.529167"
+         x="169.98041"
+         y="117.18899"
+         id="tspan11">Verb + args syntax</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:5.64444px;line-height:normal;font-family:'Book Antiqua';-inkscape-font-specification:'Book Antiqua';text-align:center;text-decoration-color:#000000;writing-mode:lr-tb;direction:ltr;text-anchor:middle;white-space:pre;fill:#1a1a1a;stroke-width:0.529167"
+       x="247.09619"
+       y="117.18899"
+       id="text21"><tspan
+         sodipodi:role="line"
+         style="font-style:italic;font-size:5.64444px;fill:#1a1a1a;stroke-width:0.529167"
+         x="247.09619"
+         y="117.18899"
+         id="tspan21">Verb + args syntax</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:8.46667px;line-height:normal;font-family:'Book Antiqua';-inkscape-font-specification:'Book Antiqua';text-align:center;text-decoration-color:#000000;writing-mode:lr-tb;direction:ltr;text-anchor:middle;white-space:pre;fill:#1a1a1a;stroke-width:0.529167"
+       x="-21.418934"
+       y="139.56189"
+       id="text10"><tspan
+         sodipodi:role="line"
+         id="tspan9"
+         style="fill:#1a1a1a;stroke-width:0.529167"
+         x="-21.418932"
+         y="139.56189">Structured</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.64444px;line-height:normal;font-family:'Book Antiqua';-inkscape-font-specification:'Book Antiqua Bold Italic';text-align:center;text-decoration-color:#000000;writing-mode:lr-tb;direction:ltr;text-anchor:middle;white-space:pre;fill:#1a1a1a;stroke-width:0.529167"
+       x="-21.798595"
+       y="131.29013"
+       id="text23"><tspan
+         sodipodi:role="line"
+         style="font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.64444px;font-family:'Book Antiqua';-inkscape-font-specification:'Book Antiqua Bold Italic';fill:#1a1a1a;stroke-width:0.529167"
+         x="-21.798594"
+         y="131.29013"
+         id="tspan23">Special syntax</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:5.64444px;line-height:normal;font-family:'Book Antiqua';-inkscape-font-specification:'Book Antiqua';text-align:center;text-decoration-color:#000000;writing-mode:lr-tb;direction:ltr;text-anchor:middle;white-space:pre;fill:#1a1a1a;stroke-width:0.529167"
+       x="-21.418934"
+       y="151.91235"
+       id="text26"><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.64444px;font-family:Consolas;-inkscape-font-specification:Consolas;fill:#1a1a1a;stroke-width:0.529167"
+         x="-21.418934"
+         y="151.91235"
+         id="tspan26">if<tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Book Antiqua';-inkscape-font-specification:'Book Antiqua'"
+   id="tspan24">, </tspan>for</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:5.64444px;line-height:normal;font-family:'Book Antiqua';-inkscape-font-specification:'Book Antiqua';text-align:center;text-decoration-color:#000000;writing-mode:lr-tb;direction:ltr;text-anchor:middle;white-space:pre;fill:#1a1a1a;stroke-width:0.529167"
+       x="46.934776"
+       y="156.67479"
+       id="text34"><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.64444px;font-family:Consolas;-inkscape-font-specification:Consolas;fill:#1a1a1a;stroke-width:0.529167"
+         x="46.934776"
+         y="156.67479"
+         id="tspan34">goto, call, exit</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:5.64444px;line-height:normal;font-family:'Book Antiqua';-inkscape-font-specification:'Book Antiqua';text-align:center;text-decoration-color:#000000;writing-mode:lr-tb;direction:ltr;text-anchor:middle;white-space:pre;fill:#1a1a1a;stroke-width:0.529167"
+       x="45.969883"
+       y="150.189"
+       id="text36"><tspan
+         sodipodi:role="line"
+         style="font-style:italic;font-size:5.64444px;fill:#1a1a1a;stroke-width:0.529167"
+         x="45.969883"
+         y="150.189"
+         id="tspan36">Verb + args syntax</tspan></text>
+  </g>
+</svg>

@@ -1,0 +1,45 @@
+﻿Command: Effect:
+-------- --------
+ASSOC    Displays or modifies file extension associations.
+BREAK    Sets or clears extended CTRL+C checking.
+CALL     Calls one batch program from another.
+CD       Displays the name of or changes the current directory.
+CHDIR    Displays the name of or changes the current directory.
+CLS      Clears the screen.
+COLOR    Sets the default console foreground and background colors.
+COPY     Copies one or more files to another location.
+DATE     Displays or sets the date.
+DEL      Deletes one or more files.
+DIR      Displays a list of files and subdirectories in a directory.
+ECHO     Displays messages, or turns command echoing on or off.
+ENDLOCAL Ends localization of environment changes in a batch file.
+ERASE    Deletes one or more files.
+EXIT     Quits the CMD.EXE program (command interpreter).
+FOR      Runs a specified command for each file in a set of files.
+FTYPE    Displays or modifies file types used in file extension
+GOTO     Directs the Windows command interpreter to a labeled line in
+IF       Performs conditional processing in batch programs.
+MD       Creates a directory.
+MKDIR    Creates a directory.
+MKLINK   Creates Symbolic Links and Hard Links
+MOVE     Moves one or more files from one directory to another
+PATH     Displays or sets a search path for executable files.
+PAUSE    Suspends processing of a batch file and displays a message.
+POPD     Restores the previous value of the current directory saved by
+PROMPT   Changes the Windows command prompt.
+PUSHD    Saves the current directory then changes it.
+RD       Removes a directory.
+REM      Records comments (remarks) in batch files or CONFIG.SYS.
+REN      Renames a file or files.
+RENAME   Renames a file or files.
+RMDIR    Removes a directory.
+SET      Displays, sets, or removes Windows environment variables.
+SETLOCAL Begins localization of environment changes in a batch file.
+SHIFT    Shifts the position of replaceable parameters in batch files.
+START    Starts a separate window to run a specified program or command.
+TIME     Displays or sets the system time.
+TITLE    Sets the window title for a CMD.EXE session.
+TYPE     Displays the contents of a text file.
+VER      Displays the Windows version.
+VERIFY   Tells Windows whether to verify that your files are written
+VOL      Displays a disk volume label and serial number.
