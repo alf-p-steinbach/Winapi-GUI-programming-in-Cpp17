@@ -48,7 +48,7 @@ auto run()
     const WNDCLASS window_class_params = make_window_class_params();
     RegisterClass( &window_class_params );
 
-    const HWND window = CreateWindowW(
+    const HWND window = CreateWindow(
         window_class_name,
         L"My first general Windows API window!",
         WS_OVERLAPPEDWINDOW,                        // Resizable and has a title bar.
