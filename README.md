@@ -1,3 +1,17 @@
-# winapi gui programming in cpp17
+# Winapi GUI programming in C++17
 
-Winapi GUI programming in C++17
+- [Introduction.](00.md)
+- [Chapter 1. Building a GUI message box “Hello, world!” in Visual Studio.](01.md)
+  - [1.1. The C++ example.](01.md#11-the-c-example)
+  - [1.2. New stuff involved in building a GUI program.](01.md#12-new-stuff-involved-in-building-a-gui-program)
+  - [1.3. Building in Visual Studio.](01.md#13-building-in-visual-studio)
+- [Chapter 2. An introduction to command line work.](02.md)
+  - [2.1. Help and documentation for Windows’ commands.](02.md#21-help-and-documentation-for-windows-commands)
+  - [2.2. Command line concepts & basic usage / MinGW g++.](02.md#22-command-line-concepts--basic-usage--mingw-g)
+  - [2.3. Visual C++.](02.md#23-visual-c)
+- [Chapter 3. General window creation & message handling, minimal.](03.md)
+  - [3.1. Window parts.](03.md#31-window-parts)
+  - [3.2. Window creation.](03.md#32-window-creation)
+  - [3.3. Window events, a.k.a. messages.](03.md#33-window-events-aka-messages)
+  - [3.4. The complete program, version 0.](03.md#34-the-complete-program-version-0)
+  - [3.5. Avoid inadvertent use of ANSI functions by requiring `UNICODE`.](03.md#35-avoid-inadvertent-use-of-ansi-functions-by-requiring-unicode)
