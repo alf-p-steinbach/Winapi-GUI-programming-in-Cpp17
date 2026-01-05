@@ -4,6 +4,7 @@
 #endif
 #include <windows.h>
 
+#include <stdio.h>
 #include <cassert>          // assert
 #include <cstdlib>          // EXIT_FAILURE
 
@@ -19,6 +20,10 @@ auto CALLBACK window_proc(
     const LPARAM        ell_param       // Meaning depends on the `msg_id`.
     ) -> LRESULT
 {
+    if( msg_id == WM_NCCREATE ) {
+        puts( "WM_NCCREATE\n" );
+        reinterpret_cast<CREATESTRUCT*>( ell_param )->lpszName = L"New name";
+    }
     if( msg_id == WM_DESTROY ) {
         // The window is being destroyed. Terminate the message loop to avoid a hang:
         PostQuitMessage( Process_exit_code::success );
