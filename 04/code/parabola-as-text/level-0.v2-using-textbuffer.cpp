@@ -1,6 +1,6 @@
 ﻿#include <algorithm>
 #include <iostream>
-#include <iterator>             // std::size
+#include <iterator>
 #include <functional>
 #include <string>
 #include <string_view>
@@ -10,6 +10,8 @@
 #include <cstdlib>
 
 namespace cppm {        // "C++ machinery"
+    using   std::size;          // <iterator>
+
     using Nat = int;
     using Byte = unsigned char;
     using C_str = const char*;
@@ -20,7 +22,7 @@ namespace cppm {        // "C++ machinery"
     template< class T > using in_       = const T&;
 
     template< class T >
-    constexpr auto nsize( in_<T> o ) noexcept -> Nat { return Nat( std::size( o ) ); }
+    constexpr auto nsize( in_<T> o ) noexcept -> Nat { return Nat( size( o ) ); }
 }  // cppm
 
 namespace u8 {
