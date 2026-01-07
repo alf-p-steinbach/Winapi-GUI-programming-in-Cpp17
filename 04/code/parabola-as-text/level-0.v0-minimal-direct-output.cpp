@@ -20,18 +20,18 @@ namespace app {
         const double    horizontal_scaling  = 2;    // A char is ~half as wide as high.
 
         cout << "Parabola (x²/4) — ASCII art graph by 日本国 кошка, version 0.\n";
-        for( int line = -15; line <= +15; ++line ) {
-            const double x = line;
+        for( int i_line = -15; i_line <= +15; ++i_line ) {
+            const double x = i_line;
             const double y = f( x );
 
-            const int       column          = static_cast<int>( y*horizontal_scaling );
-            const bool      is_marked       = (line % 5 == 0);
+            const int       i_column        = static_cast<int>( y*horizontal_scaling );
+            const bool      is_marked       = (i_line % 5 == 0);
             const C_str     plot_char       = (is_marked? "■" : "○");
 
-            if( column < 0 or column >= 120 ) {
+            if( i_column < 0 or i_column >= 120 ) {
                 cout << '\n';
             } else {
-                cout << spaces( column ) << plot_char << '\n';
+                cout << spaces( i_column ) << plot_char << '\n';
             }
         }
     }

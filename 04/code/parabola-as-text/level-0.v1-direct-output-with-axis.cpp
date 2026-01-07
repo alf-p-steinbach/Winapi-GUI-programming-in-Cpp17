@@ -21,26 +21,26 @@ namespace app {
         const double    horizontal_scaling  = 2;    // A char is ~half as wide as high.
 
         cout << "Parabola (x²/4) — ASCII art graph by 日本国 кошка, version 1.\n";
-        for( int line = -15; line <= +15; ++line ) {
-            const double x = line;
+        for( int i_line = -15; i_line <= +15; ++i_line ) {
+            const double x = i_line;
             const double y = f( x );
 
-            const int       column          = left_margin + static_cast<int>( y*horizontal_scaling );
-            const bool      is_marked       = (line % 5 == 0);
+            const int       i_column        = left_margin + static_cast<int>( y*horizontal_scaling );
+            const bool      is_marked       = (i_line % 5 == 0);
             const C_str     x_axis_char     = (is_marked? "╂" : "┃");
             const C_str     plot_char       = (is_marked? "■" : "○");
 
-            if( column < 0 or column >= 120 ) {
+            if( i_column < 0 or i_column >= 120 ) {
                 cout    << spaces( left_margin ) << x_axis_char << '\n';
-            } else if( column < left_margin ) {
-                cout    << spaces( column ) << plot_char
-                        << spaces( left_margin - (column + 1) ) << x_axis_char
+            } else if( i_column < left_margin ) {
+                cout    << spaces( i_column ) << plot_char
+                        << spaces( left_margin - (i_column + 1) ) << x_axis_char
                         << '\n';
-            } else if( column == left_margin ) {
-                cout    << spaces( column ) << plot_char << '\n';
+            } else if( i_column == left_margin ) {
+                cout    << spaces( i_column ) << plot_char << '\n';
             } else {
                 cout    << spaces( left_margin ) << x_axis_char
-                        << spaces( column - (left_margin + 1) ) << plot_char
+                        << spaces( i_column - (left_margin + 1) ) << plot_char
                         << '\n';
             }
         }
