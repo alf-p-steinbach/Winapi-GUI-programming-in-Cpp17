@@ -31,8 +31,6 @@ namespace cppm {            // "C++ machinery"
     // constexpr auto nsize( in_<T> o ) noexcept -> Nat { return Nat( size( o ) ); }
 }  // cppm
 
-using   std::wcslen;        // <cwchar>
-
 namespace winapi {
     using   cppm::Nat, cppm::in_;
 
@@ -77,11 +75,11 @@ namespace app {
 
         // Add markers for every 5 math units of math x axis.
         for( double x_magnitude = 0; ; x_magnitude += 5 ) for( const int x_sign: {-1, +1} ) {
-                const double    x           = x_sign*x_magnitude;
-                const double    y           = f( signed_x );
-                const int       i_row       = i_mid_row + int( scaling*signed_x );
-                const int       i_col       = int( scaling*y );
-            }
+            const double    x           = x_sign*x_magnitude;
+            const double    y           = f( x );
+            const int       i_row       = i_mid_row + int( scaling*x );
+            const int       i_col       = int( scaling*y );
+
             SetPixel( dc, i_col, i_row, RGB( 0xFF, 0xFF, 0xFF ) );
         }
     }
