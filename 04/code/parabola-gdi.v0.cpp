@@ -67,7 +67,7 @@ namespace app {
             const int       relative_row_number = i_row - i_mid_row;
             const double    x                   = 1.0*relative_row_number/scaling;
             const double    y                   = f( x );
-            const int       i_col               = Nat( y*scaling );
+            const int       i_col               = int( scaling*y );
 
             SetPixel( dc, i_col, i_row, black );    // x horizontal y vertical pixel coordinate.
         }
@@ -78,8 +78,8 @@ namespace app {
             const double    y           = f( x );
             const int       i_row       = i_mid_row + int( scaling*x );
             const int       i_col       = int( scaling*y );
-            
-            if( i_row >= r.bottom ) {
+
+            if( i_row < 0 ) {
                 goto break_from_the_outer_loop;
                 // Alternatively use a lambda scope or maybe a `struct` for the loop variables.
                 // Or just return from the function, though that can be a maintenance problem.
