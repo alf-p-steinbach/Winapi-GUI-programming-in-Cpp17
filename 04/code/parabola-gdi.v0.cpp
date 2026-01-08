@@ -73,19 +73,21 @@ namespace app {
         }
 
         // Add markers for every 5 math units of math x axis.
-        [&] {
-            for( double x_magnitude = 0; ; x_magnitude += 5 ) for( const int x_sign: {-1, +1} ) {
-                const double    x           = x_sign*x_magnitude;
-                const double    y           = f( x );
-                const int       i_row       = i_mid_row + int( scaling*x );
-                const int       i_col       = int( scaling*y );
-
-                if( i_row >= r.bottom ) {
-                    return;
-                }
-                SetPixel( dc, i_col, i_row, RGB( 0xFF, 0xFF, 0xFF ) );
+        for( double x_magnitude = 0; ; x_magnitude += 5 ) for( const int x_sign: {-1, +1} ) {
+            const double    x           = x_sign*x_magnitude;
+            const double    y           = f( x );
+            const int       i_row       = i_mid_row + int( scaling*x );
+            const int       i_col       = int( scaling*y );
+            
+            if( i_row >= r.bottom ) {
+                goto break_from_the_outer_loop;
+                // Alternatively use a lambda scope or maybe a `struct` for the loop variables.
+                // Or just return from the function, though that can be a maintenance problem.
             }
-        } ();
+            const auto square_rect = RECT{ i_col - 2, i_row - 2, i_col + 3, i_row + 3 };
+            FillRect( dc, &square_rect, static_cast<HBRUSH>( GetStockObject( BLACK_BRUSH ) ) );
+        }
+        break_from_the_outer_loop: ;
     }
 
     void on_wm_paint( const HWND window )
