@@ -58,7 +58,6 @@ namespace app {
         const RECT  r   = winapi::client_rect_of( window );
         const Nat   h   = r.bottom - r.top;     // r.top is always 0 for a client rect, but.
 
-        const Nat   margin_left     = 20;
         const Nat   i_mid_row       = h/2;
 
         const double scaling = 10;              // So e.g. math x = -15 maps to pixel row -150.
@@ -68,20 +67,25 @@ namespace app {
             const int       relative_row_number = i_row - i_mid_row;
             const double    x                   = 1.0*relative_row_number/scaling;
             const double    y                   = f( x );
-            const int       i_col               = margin_left + Nat( y*scaling );
+            const int       i_col               = Nat( y*scaling );
 
             SetPixel( dc, i_col, i_row, black );    // x horizontal y vertical pixel coordinate.
         }
 
         // Add markers for every 5 math units of math x axis.
-        for( double x_magnitude = 0; ; x_magnitude += 5 ) for( const int x_sign: {-1, +1} ) {
-            const double    x           = x_sign*x_magnitude;
-            const double    y           = f( x );
-            const int       i_row       = i_mid_row + int( scaling*x );
-            const int       i_col       = int( scaling*y );
+        [&] {
+            for( double x_magnitude = 0; ; x_magnitude += 5 ) for( const int x_sign: {-1, +1} ) {
+                const double    x           = x_sign*x_magnitude;
+                const double    y           = f( x );
+                const int       i_row       = i_mid_row + int( scaling*x );
+                const int       i_col       = int( scaling*y );
 
-            SetPixel( dc, i_col, i_row, RGB( 0xFF, 0xFF, 0xFF ) );
-        }
+                if( i_row >= r.bottom ) {
+                    return;
+                }
+                SetPixel( dc, i_col, i_row, RGB( 0xFF, 0xFF, 0xFF ) );
+            }
+        } ();
     }
 
     void on_wm_paint( const HWND window )
