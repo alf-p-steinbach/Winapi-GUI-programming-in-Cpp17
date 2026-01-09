@@ -29,8 +29,6 @@ namespace cppm {            // "C++ machinery"
 }  // cppm
 
 namespace winapi {
-    using   cppm::Nat, cppm::in_;
-
     auto client_rect_of( const HWND window )
         -> RECT
     {

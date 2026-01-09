@@ -17,9 +17,9 @@ namespace app {
 
     void run()
     {
-        const double    horizontal_scaling  = 2;    // A char is ~half as wide as high.
-
         cout << "Parabola (x²/4) — ASCII art graph by 日本国 кошка, version 0.\n";
+        
+        const double    horizontal_scaling  = 2;    // A char is ~half as wide as high.
         for( int i_line = -15; i_line <= +15; ++i_line ) {
             const double x = i_line;
             const double y = f( x );
