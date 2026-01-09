@@ -26,9 +26,6 @@ namespace cppm {            // "C++ machinery"
     constexpr auto sign_of( in_<T> v ) noexcept
         -> Sign::Enum
     { return Sign::Enum( (v > 0) - (v < 0) ); }
-
-    // template< class T >
-    // constexpr auto nsize( in_<T> o ) noexcept -> Nat { return Nat( size( o ) ); }
 }  // cppm
 
 namespace winapi {
@@ -54,38 +51,39 @@ namespace app {
     void paint( const HWND window, const HDC dc )
     {
         static constexpr COLORREF black = RGB( 0, 0, 0 );
+        static const auto black_brush = static_cast<HBRUSH>( GetStockObject( BLACK_BRUSH ) );
 
         const RECT  r   = winapi::client_rect_of( window );
         const Nat   h   = r.bottom - r.top;     // r.top is always 0 for a client rect, but.
 
-        const Nat   i_mid_row       = h/2;
+        const Nat   i_mid_pixel_row = h/2;
 
         const double scaling = 10;              // So e.g. math x = -15 maps to pixel row -150.
 
-        // Plot the parabola
-        for( Nat i_row = 0; i_row < r.bottom; ++i_row ) {
-            const int       relative_row_number = i_row - i_mid_row;
-            const double    x                   = 1.0*relative_row_number/scaling;
+        // Plot the parabola.
+        for( Nat i_pixel_row = 0; i_pixel_row < r.bottom; ++i_pixel_row ) {
+            const int       relative_row_index = i_pixel_row - i_mid_pixel_row;
+            const double    x                   = 1.0*relative_row_index/scaling;
             const double    y                   = f( x );
-            const int       i_col               = int( scaling*y );
+            const int       i_pixel_col         = int( scaling*y );
 
-            SetPixel( dc, i_col, i_row, black );    // x horizontal y vertical pixel coordinate.
+            SetPixel( dc, i_pixel_col, i_pixel_row, black );    // x hor y ver pixel coordinate.
         }
 
         // Add markers for every 5 math units of math x axis.
         for( double x_magnitude = 0; ; x_magnitude += 5 ) for( const int x_sign: {-1, +1} ) {
-            const double    x           = x_sign*x_magnitude;
-            const double    y           = f( x );
-            const int       i_row       = i_mid_row + int( scaling*x );
-            const int       i_col       = int( scaling*y );
+            const double    x               = x_sign*x_magnitude;
+            const double    y               = f( x );
+            const int       i_pixel_row     = i_mid_pixel_row + int( scaling*x );
+            const int       i_pixel_col     = int( scaling*y );
 
-            if( i_row < 0 ) {
+            if( i_pixel_row < 0 ) {     // Graph centered on mid row so checking the top suffices.
                 goto break_from_the_outer_loop;
-                // Alternatively use a lambda scope or maybe a `struct` for the loop variables.
-                // Or just return from the function, though that can be a maintenance problem.
             }
-            const auto square_rect = RECT{ i_col - 2, i_row - 2, i_col + 3, i_row + 3 };
-            FillRect( dc, &square_rect, static_cast<HBRUSH>( GetStockObject( BLACK_BRUSH ) ) );
+            const auto square_marker_rect = RECT{
+                i_pixel_col - 2, i_pixel_row - 2, i_pixel_col + 3, i_pixel_row + 3
+                };
+            FillRect( dc, &square_marker_rect, black_brush );
         }
         break_from_the_outer_loop: ;
     }
