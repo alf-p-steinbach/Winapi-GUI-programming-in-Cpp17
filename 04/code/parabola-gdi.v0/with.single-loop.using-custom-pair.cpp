@@ -4,6 +4,7 @@
 #endif
 #include <windows.h>
 
+#include <initializer_list> // Formally required for initializer-list in range based `for`.
 #include <iterator>
 #include <vector>
 
@@ -25,16 +26,9 @@ namespace cppm {            // "C++ machinery"
     constexpr auto sign_of( in_<T> v ) noexcept
         -> Sign::Enum
     { return Sign::Enum( (v > 0) - (v < 0) ); }
-
-    template< class T >
-    constexpr auto nsize( in_<T> o ) noexcept -> Nat { return Nat( size( o ) ); }
 }  // cppm
 
-using   std::wcslen;        // <cwchar>
-
 namespace winapi {
-    using   cppm::Nat, cppm::in_;
-
     auto client_rect_of( const HWND window )
         -> RECT
     {
@@ -42,39 +36,60 @@ namespace winapi {
         GetClientRect( window, &r );
         return r;
     }
-
-    auto width_of( in_<RECT> r )    -> Nat  { return r.right - r.left; }
-    auto height_of( in_<RECT> r )   -> Nat  { return r.bottom - r.top; }
 }  // winapi
 
 namespace app {
-    using   cppm::Nat, cppm::Process_exit_code, cppm::sign_of, cppm::nsize;
+    using   cppm::Nat, cppm::Process_exit_code, cppm::sign_of;
 
-    using   std::vector;            // <vector>
+    const auto& window_class_name   = L"Main window";
+    const auto& window_title        = L"Parabola (x²/4) — ASCII art graph by 日本国 кошка";
 
     auto f( const double x ) -> double { return x*x/4; }
 
     void paint( const HWND window, const HDC dc )
     {
-        static const auto& legend = L"Parabola (x²/4) — ASCII art graph by 日本国 кошка";
+        static constexpr COLORREF black = RGB( 0, 0, 0 );
+        static const auto black_brush = static_cast<HBRUSH>( GetStockObject( BLACK_BRUSH ) );
 
         const RECT  r   = winapi::client_rect_of( window );
-        const Nat   h   = winapi::height_of( r );
-        // const Nat   w   = winapi::width_of( r );
+        const Nat   h   = r.bottom - r.top;     // r.top is always 0 for a client rect, but.
 
-        const Nat   margin_left     = 20;
-        const Nat   mid_row         = h/2;
+        const Nat   i_mid_pixel_row = h/2;
 
-        const double scaling = 10;      // So e.g. x = -15 maps to pixel row -150.
-        vector<POINT> points;
-        for( Nat i_row = 0; i_row < r.bottom; ++i_row ) {
-            const Nat       row_number  = i_row - mid_row;
-            const double    x           = 1.0*row_number/scaling;
-            const double    y           = f( x );
-            const Nat       i_col       = margin_left + Nat( y*scaling );
-            points.push_back( POINT{ i_col, i_row } );          // (x, y) pixel coordinate.
+        const double scaling = 10;              // So e.g. math x = -15 maps to pixel row -150.
+
+        // Plot the parabola.
+        for( Nat i_pixel_row = 0; i_pixel_row < h; ++i_pixel_row ) {
+            const int       relative_row_index = i_pixel_row - i_mid_pixel_row;
+            const double    x                   = 1.0*relative_row_index/scaling;
+            const double    y                   = f( x );
+            const int       i_pixel_col         = int( scaling*y );
+
+            SetPixel( dc, i_pixel_col, i_pixel_row, black );    // x hor y ver pixel coordinate.
         }
-        Polyline( dc, points.data(), nsize( points ) );
+
+        struct X_parts
+        {
+            int         sign        =  +1;      // -1 or +1.
+            double      magnitude   = 0.0;      // Multiple of 5.
+            void operator++() { if( sign == -1 ) { sign = +1; } else { sign = -1; magnitude += 5; } }
+        };
+
+        // Add markers for every 5 math units of math x axis.
+        for( X_parts x_parts = {}; ; ++x_parts ) {
+            const double    x               = x_parts.sign*x_parts.magnitude;
+            const double    y               = f( x );
+            const int       i_pixel_row     = i_mid_pixel_row + int( scaling*x );
+            const int       i_pixel_col     = int( scaling*y );
+
+            if( i_pixel_row < 0 ) {     // Graph centered on mid row so checking the top suffices.
+                break;
+            }
+            const auto square_marker_rect = RECT{
+                i_pixel_col - 2, i_pixel_row - 2, i_pixel_col + 3, i_pixel_row + 3
+                };
+            FillRect( dc, &square_marker_rect, black_brush );
+        }
     }
 
     void on_wm_paint( const HWND window )
@@ -104,8 +119,6 @@ namespace app {
         return DefWindowProc( window, msg_id, w_param, ell_param );     // Default handling.
     }
 
-    const auto& window_class_name = L"Main window";
-
     auto make_window_class_params()
         -> WNDCLASS
     {
@@ -127,7 +140,7 @@ namespace app {
 
         const HWND window = CreateWindow(
             window_class_name,
-            L"Parabola",
+            window_title,
             WS_OVERLAPPEDWINDOW,                        // Resizable and has a title bar.
             CW_USEDEFAULT, CW_USEDEFAULT, 400, 280,     // x y w h
             HWND(),                                     // Owner window; none.
