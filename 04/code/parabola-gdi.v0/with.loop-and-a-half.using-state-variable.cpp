@@ -106,12 +106,12 @@ namespace app {
         ) -> LRESULT
     {
         switch( msg_id ) {
-            case WM_DESTROY: {
+            case WM_DESTROY:    {
                 // The window is being destroyed. Terminate the message loop to avoid a hang:
                 PostQuitMessage( Process_exit_code::success );
                 return 0;
             }
-            case WM_PAINT:  { on_wm_paint( window );  return 0; }
+            case WM_PAINT:      { on_wm_paint( window );  return 0; }
         }
         return DefWindowProc( window, msg_id, w_param, ell_param );     // Default handling.
     }
