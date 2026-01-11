@@ -69,7 +69,7 @@ namespace app {
         }
 
         // Add markers for every 5 math units of math x axis.
-        const double max_x_magnitude = 5*(i_mid_row/5); // Centered on mid so it’s symmetrical.
+        const double max_x_magnitude = 5*(i_mid_pixel_row/5);   // Centered on mid so it’s symmetrical.
         for( double x = -max_x_magnitude; x <= max_x_magnitude; x += 5 ) {
             const double    y               = f( x );
             const int       i_pixel_row     = i_mid_pixel_row + int( scaling*x );

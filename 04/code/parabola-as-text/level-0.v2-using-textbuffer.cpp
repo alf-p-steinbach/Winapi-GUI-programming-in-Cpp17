@@ -105,7 +105,7 @@ namespace app {
 
     auto f( const double x ) -> double { return x*x/4; }
 
-    class Display
+    class Display_buffer
     {
         using Line = vector<u8::Code_point>;
         vector<Line>    m_lines;
@@ -113,7 +113,7 @@ namespace app {
     public:
         struct Col{ Nat value; };  struct Row{ Nat value; };
 
-        explicit Display( const Nat n_lines ): m_lines( n_lines ) {}
+        explicit Display_buffer( const Nat n_lines ): m_lines( n_lines ) {}
 
         void put_at( const Row i_row, const Col i_col, in_<string_view> line )
         {
@@ -161,34 +161,43 @@ namespace app {
         const Nat   n_columns       = 120;
         const Nat   n_lines         = (i_last_line + 1) - i_first_line;
 
-        using Row = Display::Row;  using Col = Display::Col;
+        using Row = Display_buffer::Row;  using Col = Display_buffer::Col;
+        auto display_buffer = Display_buffer( n_lines );
 
-        auto display = Display( n_lines );
-        display.put_at( Row{ 0 - i_first_line }, repeat_times( n_columns, "━" ) );
-        for( Nat i_col = left_margin; i_col < n_columns; i_col += 5*horizontal_scaling ) {
-            if( i_col > left_margin ) { display.put_at( Row{ 0 - i_first_line }, Col{ i_col }, "┿" ); }
-        }
-
-        for( Nat i = 0; i < n_lines; ++i ) {
-            const int i_line = i + i_first_line;
-            const double x = i_line;
-            const double y = f( x );
-            
-            const int       i_column        = left_margin + static_cast<int>( y*horizontal_scaling );
-            const bool      is_marked       = (i_line % 5 == 0);
-            const C_str     x_axis_char     = (i_line == 0? "╋" : is_marked? "╂" : "┃");
-            const C_str     plot_char       = (is_marked? "■" : "○");
-
-            display.put_at( Row{ i }, Col{ left_margin }, x_axis_char );
-            if( 0 <= i_column and i_column < 120 ) {
-                display.put_at( Row{ i }, Col{ i_column }, plot_char );
+        const auto generate_y_axis = [&]
+        {
+            display_buffer.put_at( Row{ 0 - i_first_line }, repeat_times( n_columns, "━" ) );
+            for( Nat i_col = left_margin; i_col < n_columns; i_col += 5*horizontal_scaling ) {
+                if( i_col > left_margin ) { display_buffer.put_at( Row{ 0 - i_first_line }, Col{ i_col }, "┿" ); }
             }
-        }
-        display.put_at(
+        };
+
+        const auto generate_x_axis_and_graph = [&]
+        {
+            for( Nat i = 0; i < n_lines; ++i ) {
+                const int i_line = i + i_first_line;
+                const double x = i_line;
+                const double y = f( x );
+                
+                const int       i_column        = left_margin + static_cast<int>( y*horizontal_scaling );
+                const bool      is_marked       = (i_line % 5 == 0);
+                const C_str     x_axis_char     = (i_line == 0? "╋" : is_marked? "╂" : "┃");
+                const C_str     plot_char       = (is_marked? "■" : "○");
+
+                display_buffer.put_at( Row{ i }, Col{ left_margin }, x_axis_char );
+                if( 0 <= i_column and i_column < 120 ) {
+                    display_buffer.put_at( Row{ i }, Col{ i_column }, plot_char );
+                }
+            }
+        };
+
+        generate_y_axis();
+        generate_x_axis_and_graph();
+        display_buffer.put_at(
             Row{ 2 - i_first_line }, Col{ left_margin + 40 },
             "Parabola (x²/4) — ASCII art graph by 日本国 кошка, version 2."
             );
-        for( Nat i = 0; i < n_lines; ++i ) { cout << display.string_at( Row{ i } ) << '\n'; }
+        for( Nat i = 0; i < n_lines; ++i ) { cout << display_buffer.string_at( Row{ i } ) << '\n'; }
     }
 }  // app
 

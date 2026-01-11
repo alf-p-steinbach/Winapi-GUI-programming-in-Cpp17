@@ -15,10 +15,8 @@ namespace app {
 
     auto spaces( const Nat n ) -> string { return string( n, ' ' ); }
 
-    void run()
+    void plot()
     {
-        cout << "Parabola (x²/4) — ASCII art graph by 日本国 кошка, version 0.\n";
-        
         const double    horizontal_scaling  = 2;    // A char is ~half as wide as high.
         for( int i_line = -15; i_line <= +15; ++i_line ) {
             const double x = i_line;
@@ -34,6 +32,12 @@ namespace app {
                 cout << spaces( i_column ) << plot_char << '\n';
             }
         }
+    }
+
+    void run()
+    {
+        cout << "Parabola (x²/4) — ASCII art graph by 日本国 кошка, version 0.\n";
+        plot();
     }
 }  // app
 
