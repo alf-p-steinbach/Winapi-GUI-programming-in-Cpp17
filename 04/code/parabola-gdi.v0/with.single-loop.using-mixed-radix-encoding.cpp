@@ -6,7 +6,6 @@
 
 #include <initializer_list> // Formally required for initializer-list in range based `for`.
 #include <iterator>
-#include <vector>
 
 #include <cassert>          // assert
 #include <cstdlib>          // EXIT_FAILURE
