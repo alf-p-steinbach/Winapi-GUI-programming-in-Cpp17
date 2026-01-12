@@ -45,7 +45,7 @@ namespace app {
     using   std::invoke;        // <functional>
 
     const auto& window_class_name   = L"Main window";
-    const auto& window_title        = L"Parabola (x²/4) — ASCII art graph by 日本国 кошка";
+    const auto& window_title        = L"Parabola (x²/4) — graph by 日本国 кошка";
 
     auto f( const double x ) -> double { return x*x/4; }
 

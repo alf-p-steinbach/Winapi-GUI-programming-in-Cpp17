@@ -83,6 +83,13 @@ namespace app {
         }
     }
 
+    void on_wm_destroy( const HWND window )
+    {
+        // The window is being destroyed. Terminate the message loop to avoid a hang:
+        (void) window;      // Unused.
+        PostQuitMessage( Process_exit_code::success );
+    }
+
     void on_wm_paint( const HWND window )
     {
         PAINTSTRUCT     info = {};          // Primarily a dc and an update rectangle.
@@ -90,6 +97,11 @@ namespace app {
         const HDC dc = BeginPaint( window, &info );
         if( dc ) { paint( window, dc ); }
         EndPaint( window, &info );
+    }
+
+    void on_wm_size( const HWND window )
+    {
+        InvalidateRect( window, nullptr, true );    // `true` ⇨ let `BeginPaint` erase background.
     }
 
     auto CALLBACK window_proc(
@@ -100,12 +112,9 @@ namespace app {
         ) -> LRESULT
     {
         switch( msg_id ) {
-            case WM_DESTROY:    {
-                // The window is being destroyed. Terminate the message loop to avoid a hang:
-                PostQuitMessage( Process_exit_code::success );
-                return 0;
-            }
+            case WM_DESTROY:    { on_wm_destroy( window );  return 0; }
             case WM_PAINT:      { on_wm_paint( window );  return 0; }
+            case WM_SIZE:       { on_wm_size( window );  return 0; }
         }
         return DefWindowProc( window, msg_id, w_param, ell_param );     // Default handling.
     }
