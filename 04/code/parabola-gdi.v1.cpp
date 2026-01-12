@@ -142,7 +142,7 @@ namespace app {
             window_class_name,
             window_title,
             WS_OVERLAPPEDWINDOW,                        // Resizable and has a title bar.
-            CW_USEDEFAULT, CW_USEDEFAULT, 400, 280,     // x y w h
+            CW_USEDEFAULT, CW_USEDEFAULT, 640, 400,     // x y w h
             HWND(),                                     // Owner window; none.
             HMENU(),                                    // Menu handle or child window id.
             GetModuleHandle( 0 ),                       // Not very useful in modern code.
