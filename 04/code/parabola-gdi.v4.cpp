@@ -6,6 +6,7 @@
 
 #include <initializer_list> // Formally required for initializer-list in range based `for`.
 #include <iterator>
+#include <vector>
 
 #include <cassert>          // assert
 #include <cstdlib>          // EXIT_FAILURE
@@ -40,8 +41,10 @@ namespace winapi {
 namespace app {
     using   cppm::Nat, cppm::Process_exit_code, cppm::sign_of;
 
+    using   std::vector;            // <vector>
+
     const auto& window_class_name   = L"Main window";
-    const auto& window_title        = L"Parabola (x²/4) — graph by 日本国 кошка";
+    const auto& window_title        = L"Parabola (x²/4) — graph by 日本国 кошка, v4";
 
     auto f( const double x ) -> double { return x*x/4; }
 
@@ -51,29 +54,68 @@ namespace app {
         static const auto black_brush = static_cast<HBRUSH>( GetStockObject( BLACK_BRUSH ) );
 
         const RECT  r   = winapi::client_rect_of( window );
+        const Nat   w   = r.right - r.left;     // r.left is always 0 for a client rect, but.
         const Nat   h   = r.bottom - r.top;     // r.top is always 0 for a client rect, but.
 
-        const Nat   i_pixel_row_middle = h/2;
+        const double    scaling     = 10;           // So e.g. math x = -15 maps to pixel row -150.
+        const double    minimum_y   = -2.0;         // In the display’s left edge.
+        
+        const Nat       i_pixel_row_middle  = h/2;
+        const Nat       i_pixel_col_y_zero  = int( scaling*( 0.0 - minimum_y ) );
 
-        const double scaling = 10;              // So e.g. math x = -15 maps to pixel row -150.
-
-        // Plot the parabola.
-        for( Nat i_pixel_row = 0; i_pixel_row < h; ++i_pixel_row ) {
-            const int       relative_row_index = i_pixel_row - i_pixel_row_middle;
-            const double    x                   = 1.0*relative_row_index/scaling;
-            const double    y                   = f( x );
-            const int       i_pixel_col         = int( scaling*y );
-
-            SetPixel( dc, i_pixel_col, i_pixel_row, black );    // x hor y ver pixel coordinate.
-        }
-
-        // Add markers for every 5 math units of math x axis.
         const Nat       max_int_x_magnitude         = Nat( i_pixel_row_middle/scaling );
         const double    max_marker_x_magnitude      = 5*(max_int_x_magnitude/5);    // Symmetrical.
+
+        const Nat       min_int_y                   = Nat( minimum_y );
+        const double    min_marker_y                = 5*(min_int_y/5);
+        const Nat       max_int_y                   = Nat( minimum_y + w/scaling );
+        const double    max_marker_y                = 5*(max_int_y/5);
+
+        // Display the math x and y axes first to make the graph appear to be “above”.
+    
+        // Math y-axis:
+        MoveToEx( dc, i_pixel_col_y_zero, 0, nullptr );
+        LineTo( dc, i_pixel_col_y_zero, h );
+
+        // Add markers on the math y-axis for every 5 math units.
+        for( double y = min_marker_y; y <= max_marker_y; y += 5 ) {
+            const int       i_pixel_row     = i_pixel_row_middle;
+            const int       i_pixel_col     = i_pixel_col_y_zero + int( scaling*y );
+
+            MoveToEx( dc, i_pixel_col, i_pixel_row - 2, nullptr );
+            LineTo( dc, i_pixel_col, i_pixel_row + 3 );
+        }
+
+        // Math x-axis:
+        MoveToEx( dc, 0, i_pixel_row_middle, nullptr );
+        LineTo( dc, w, i_pixel_row_middle );
+
+        // Add markers on the math x-axis for every 5 math units.
+        for( double x = -max_marker_x_magnitude; x <= max_marker_x_magnitude; x += 5 ) {
+            const int       i_pixel_row     = i_pixel_row_middle + int( scaling*x );
+            const int       i_pixel_col     = i_pixel_col_y_zero;
+
+            MoveToEx( dc, i_pixel_col - 2, i_pixel_row, nullptr );
+            LineTo( dc, i_pixel_col + 3, i_pixel_row );
+        }
+
+        // Plot the parabola.
+        auto points = vector<POINT>( h );
+        for( Nat i_pixel_row = 0; i_pixel_row < h; ++i_pixel_row ) {
+            const int       relative_row_index  = i_pixel_row - i_pixel_row_middle;
+            const double    x                   = 1.0*relative_row_index/scaling;
+            const double    y                   = f( x );
+            const int       i_pixel_col         = i_pixel_col_y_zero + int( scaling*y );
+
+            points[i_pixel_row] = POINT{ i_pixel_col, i_pixel_row };
+        }
+        Polyline( dc, points.data(), int( points.size() ) );
+
+        // Add markers on the graph for every 5 math units of math x axis.
         for( double x = -max_marker_x_magnitude; x <= max_marker_x_magnitude; x += 5 ) {
             const double    y               = f( x );
             const int       i_pixel_row     = i_pixel_row_middle + int( scaling*x );
-            const int       i_pixel_col     = int( scaling*y );
+            const int       i_pixel_col     = i_pixel_col_y_zero + int( scaling*y );
 
             const auto square_marker_rect = RECT{
                 i_pixel_col - 2, i_pixel_row - 2, i_pixel_col + 3, i_pixel_row + 3

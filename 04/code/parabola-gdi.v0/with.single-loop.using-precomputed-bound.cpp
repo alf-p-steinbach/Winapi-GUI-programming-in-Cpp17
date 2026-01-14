@@ -53,13 +53,13 @@ namespace app {
         const RECT  r   = winapi::client_rect_of( window );
         const Nat   h   = r.bottom - r.top;     // r.top is always 0 for a client rect, but.
 
-        const Nat   i_mid_pixel_row = h/2;
+        const Nat   i_pixel_row_middle = h/2;
 
         const double scaling = 10;              // So e.g. math x = -15 maps to pixel row -150.
 
         // Plot the parabola.
         for( Nat i_pixel_row = 0; i_pixel_row < h; ++i_pixel_row ) {
-            const int       relative_row_index = i_pixel_row - i_mid_pixel_row;
+            const int       relative_row_index = i_pixel_row - i_pixel_row_middle;
             const double    x                   = 1.0*relative_row_index/scaling;
             const double    y                   = f( x );
             const int       i_pixel_col         = int( scaling*y );
@@ -68,11 +68,11 @@ namespace app {
         }
 
         // Add markers for every 5 math units of math x axis.
-        const Nat       max_int_x_magnitude         = Nat( i_mid_pixel_row/scaling );
+        const Nat       max_int_x_magnitude         = Nat( i_pixel_row_middle/scaling );
         const double    max_marker_x_magnitude      = 5*(max_int_x_magnitude/5);    // Symmetrical.
         for( double x = -max_marker_x_magnitude; x <= max_marker_x_magnitude; x += 5 ) {
             const double    y               = f( x );
-            const int       i_pixel_row     = i_mid_pixel_row + int( scaling*x );
+            const int       i_pixel_row     = i_pixel_row_middle + int( scaling*x );
             const int       i_pixel_col     = int( scaling*y );
 
             const auto square_marker_rect = RECT{
