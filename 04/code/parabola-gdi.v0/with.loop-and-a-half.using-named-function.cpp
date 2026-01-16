@@ -42,7 +42,7 @@ namespace winapi {
 }  // winapi
 
 namespace app {
-    using   cppm::Nat, cppm::Process_exit_code, cppm::sign_of;
+    using   cppm::Nat, cppm::in_, cppm::Process_exit_code, cppm::sign_of;
 
     const auto& window_class_name   = L"Main window";
     const auto& window_title        = L"Parabola (x²/4) — graph by 日本国 кошка";
@@ -56,13 +56,13 @@ namespace app {
         static inline const auto black_brush = static_cast<HBRUSH>( GetStockObject( BLACK_BRUSH ) );
 
         const Nat   m_height;
-        const Nat   m_i_mid_pixel_row;
+        const Nat   m_i_pixel_mid_row;
 
         void plot_the_function( const HDC dc ) const
         {
             // Plot the parabola.
             for( Nat i_pixel_row = 0; i_pixel_row < m_height; ++i_pixel_row ) {
-                const int       relative_row_index = i_pixel_row - m_i_mid_pixel_row;
+                const int       relative_row_index = i_pixel_row - m_i_pixel_mid_row;
                 const double    x                   = 1.0*relative_row_index/scaling;
                 const double    y                   = f( x );
                 const int       i_pixel_col         = int( scaling*y );
@@ -77,7 +77,7 @@ namespace app {
             for( double x_magnitude = 0; ; x_magnitude += 5 ) { for( const int x_sign: {-1, +1} ) {
                 const double    x               = x_sign*x_magnitude;
                 const double    y               = f( x );
-                const int       i_pixel_row     = m_i_mid_pixel_row + int( scaling*x );
+                const int       i_pixel_row     = m_i_pixel_mid_row + int( scaling*x );
                 const int       i_pixel_col     = int( scaling*y );
 
                 if( i_pixel_row < 0 ) {     // Graph centered on mid row so checking the top suffices.
@@ -91,9 +91,15 @@ namespace app {
         }
 
     public:
+        Graph_plotter( in_<RECT> r ):
+            m_height( winapi::height_of( r ),
+            m_i_pixel_mid_row( m_height/2 )      // r.top is 0 for a client rect.
+        {
+            assert( m_height >= 0 );
+        }
+
         Graph_plotter( const HWND window ):
-            m_height( winapi::height_of( winapi::client_rect_of( window ) ) ),
-            m_i_mid_pixel_row( m_height/2 )      // r.top is 0 for a client rect.
+            Graph_plotter( winapi::client_rect_of( window ) ) )
         {}
 
         void plot_on( const HDC dc ) const { plot_the_function( dc ); add_markers( dc ); }

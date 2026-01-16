@@ -29,12 +29,32 @@ namespace cppm {            // "C++ machinery"
 }  // cppm
 
 namespace winapi {
+    using   cppm::in_;
+
     auto client_rect_of( const HWND window )
         -> RECT
     {
         RECT r;
         GetClientRect( window, &r );
         return r;
+    }
+
+    void draw_line_sans_endpoint( const HDC dc, in_<POINT> from, in_<POINT> to )
+    {
+        const POINT points[] = {from, to};
+        Polyline( dc, points, 2 );
+    }
+
+    void set_pixel( const HDC dc, in_<POINT> where )
+    {
+        // With a fancy pen this can conceivably be imperfect.
+        draw_line_sans_endpoint( dc, where, {where.x + 1, where.y} );
+    }
+
+    void draw_line( const HDC dc, in_<POINT> from, in_<POINT> to )
+    {
+        draw_line_sans_endpoint( dc, from, to );
+        set_pixel( dc, to );
     }
 }  // winapi
 
@@ -50,18 +70,18 @@ namespace app {
 
     void paint( const HWND window, const HDC dc )
     {
-        static constexpr COLORREF black = RGB( 0, 0, 0 );
         static const auto black_brush = static_cast<HBRUSH>( GetStockObject( BLACK_BRUSH ) );
 
         const RECT  r   = winapi::client_rect_of( window );
         const Nat   w   = r.right - r.left;     // r.left is always 0 for a client rect, but.
         const Nat   h   = r.bottom - r.top;     // r.top is always 0 for a client rect, but.
+        assert( h >= 0 );
 
         const double    scaling     = 10;           // So e.g. math x = -15 maps to pixel row -150.
         const double    minimum_y   = -2.0;         // In the display’s left edge.
         
-        const Nat       i_pixel_row_middle  = h/2;
-        const Nat       i_pixel_col_y_zero  = int( scaling*( 0.0 - minimum_y ) );
+        const Nat       i_pixel_row_middle      = h/2;
+        const Nat       i_pixel_col_y_zero      = int( scaling*( 0.0 - minimum_y ) );
 
         const Nat       max_int_x_magnitude         = Nat( i_pixel_row_middle/scaling );
         const double    max_marker_x_magnitude      = 5*(max_int_x_magnitude/5);    // Symmetrical.
@@ -74,40 +94,37 @@ namespace app {
         // Display the math x and y axes first to make the graph appear to be “above”.
     
         // Math y-axis:
-        MoveToEx( dc, i_pixel_col_y_zero, 0, nullptr );
-        LineTo( dc, i_pixel_col_y_zero, h );
+        winapi::draw_line( dc, {i_pixel_col_y_zero, 0}, {i_pixel_col_y_zero, h} );
 
-        // Add markers on the math y-axis for every 5 math units.
+        // Add ticks on the math y-axis for every 5 math units.
         for( double y = min_marker_y; y <= max_marker_y; y += 5 ) {
-            const int       i_pixel_row     = i_pixel_row_middle;
-            const int       i_pixel_col     = i_pixel_col_y_zero + int( scaling*y );
+            const int   row     = i_pixel_row_middle;
+            const int   col     = i_pixel_col_y_zero + int( scaling*y );
 
-            MoveToEx( dc, i_pixel_col, i_pixel_row - 2, nullptr );
-            LineTo( dc, i_pixel_col, i_pixel_row + 3 );
+            winapi::draw_line( dc, {col, row - 2}, {col, row + 2} );
         }
 
         // Math x-axis:
-        MoveToEx( dc, 0, i_pixel_row_middle, nullptr );
-        LineTo( dc, w, i_pixel_row_middle );
+        winapi::draw_line( dc, {0, i_pixel_row_middle}, {w, i_pixel_row_middle} );
 
-        // Add markers on the math x-axis for every 5 math units.
+        // Add ticks on the math x-axis for every 5 math units.
         for( double x = -max_marker_x_magnitude; x <= max_marker_x_magnitude; x += 5 ) {
-            const int       i_pixel_row     = i_pixel_row_middle + int( scaling*x );
-            const int       i_pixel_col     = i_pixel_col_y_zero;
+            const int   row     = i_pixel_row_middle + int( scaling*x );
+            const int   col     = i_pixel_col_y_zero;
 
-            MoveToEx( dc, i_pixel_col - 2, i_pixel_row, nullptr );
-            LineTo( dc, i_pixel_col + 3, i_pixel_row );
+            winapi::draw_line( dc, {col - 2, row}, {col + 2, row} );
         }
 
         // Plot the parabola.
-        auto points = vector<POINT>( h );
-        for( Nat i_pixel_row = 0; i_pixel_row < h; ++i_pixel_row ) {
+        // The graph is plotted to vertically just outside the client area, to avoid cutting it.
+        auto points = vector<POINT>( h + 2 );       // 2 extra pixel rows for plotting to outside.
+        for( int i_pixel_row = -1; i_pixel_row <= h; ++i_pixel_row ) {
             const int       relative_row_index  = i_pixel_row - i_pixel_row_middle;
             const double    x                   = 1.0*relative_row_index/scaling;
             const double    y                   = f( x );
             const int       i_pixel_col         = i_pixel_col_y_zero + int( scaling*y );
 
-            points[i_pixel_row] = POINT{ i_pixel_col, i_pixel_row };
+            points[i_pixel_row + 1] = POINT{ i_pixel_col, i_pixel_row };
         }
         Polyline( dc, points.data(), int( points.size() ) );
 

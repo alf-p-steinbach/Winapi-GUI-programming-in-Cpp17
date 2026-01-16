@@ -55,10 +55,11 @@ namespace app {
 
         const RECT  r   = winapi::client_rect_of( window );
         const Nat   h   = r.bottom - r.top;     // r.top is always 0 for a client rect, but.
-
-        const Nat   i_mid_pixel_row = h/2;
+        assert( h >= 0 );
 
         const double scaling = 10;              // So e.g. math x = -15 maps to pixel row -150.
+        
+        const Nat   i_pixel_row_middle = h/2;
 
         // Plot the parabola.
         for( Nat i_pixel_row = 0; i_pixel_row < h; ++i_pixel_row ) {

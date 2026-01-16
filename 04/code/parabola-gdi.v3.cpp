@@ -50,25 +50,26 @@ namespace app {
 
     void paint( const HWND window, const HDC dc )
     {
-        static constexpr COLORREF black = RGB( 0, 0, 0 );
         static const auto black_brush = static_cast<HBRUSH>( GetStockObject( BLACK_BRUSH ) );
 
         const RECT  r   = winapi::client_rect_of( window );
-        const Nat   h   = r.bottom - r.top;     // r.top is always 0 for a client rect, but.
-
-        const Nat   i_pixel_row_middle = h/2;
+        const Nat   h   = r.bottom - r.top;         // r.top is always 0 for a client rect, but.
+        assert( h >= 0 );
 
         const double    scaling     = 10;           // So e.g. math x = -15 maps to pixel row -150.
 
+        const Nat   i_pixel_row_middle = h/2;
+
         // Plot the parabola.
-        auto points = vector<POINT>( h );
-        for( Nat i_pixel_row = 0; i_pixel_row < h; ++i_pixel_row ) {
+        // The graph is plotted to vertically just outside the client area, to avoid cutting it.
+        auto points = vector<POINT>( h + 2 );       // 2 extra pixel rows for plotting to outside.
+        for( int i_pixel_row = -1; i_pixel_row <= h; ++i_pixel_row ) {
             const int       relative_row_index  = i_pixel_row - i_pixel_row_middle;
             const double    x                   = 1.0*relative_row_index/scaling;
             const double    y                   = f( x );
             const int       i_pixel_col         = int( scaling*y );
 
-            points[i_pixel_row] = POINT{ i_pixel_col, i_pixel_row };
+            points[i_pixel_row + 1] = POINT{ i_pixel_col, i_pixel_row };
         }
         Polyline( dc, points.data(), int( points.size() ) );
 
@@ -96,7 +97,7 @@ namespace app {
 
     void on_wm_paint( const HWND window )
     {
-        PAINTSTRUCT     info = {};          // Primarily a dc and an update rectangle.
+        PAINTSTRUCT     info = {};                  // Primarily a dc and an update rectangle.
 
         const HDC dc = BeginPaint( window, &info );
         if( dc ) { paint( window, dc ); }

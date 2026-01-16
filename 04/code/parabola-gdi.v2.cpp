@@ -47,30 +47,28 @@ namespace app {
 
     void paint( const HWND window, const HDC dc )
     {
-        static constexpr COLORREF black = RGB( 0, 0, 0 );
         static const auto black_brush = static_cast<HBRUSH>( GetStockObject( BLACK_BRUSH ) );
 
         const RECT  r   = winapi::client_rect_of( window );
         const Nat   h   = r.bottom - r.top;     // r.top is always 0 for a client rect, but.
-
-        const Nat   i_pixel_row_middle = h/2;
+        assert( h >= 0 );
 
         const double scaling = 10;              // So e.g. math x = -15 maps to pixel row -150.
+        
+        const Nat   i_pixel_row_middle = h/2;
 
         // Plot the parabola.
-        for( Nat i_pixel_row = 0; i_pixel_row < h; ++i_pixel_row ) {
+        // The graph is plotted to vertically just outside the client area, to avoid cutting it.
+        for( int i_pixel_row = -1; i_pixel_row <= h; ++i_pixel_row ) {
             const int       relative_row_index = i_pixel_row - i_pixel_row_middle;
             const double    x                   = 1.0*relative_row_index/scaling;
             const double    y                   = f( x );
             const int       i_pixel_col         = int( scaling*y );
 
-            if( i_pixel_row == 0 ) {
+            if( i_pixel_row == -1 ) {
                 MoveToEx( dc, i_pixel_col, i_pixel_row, nullptr );
             } else {
                 LineTo( dc, i_pixel_col, i_pixel_row );         // Draws black by default.
-                if( i_pixel_row == h - 1 ) {
-                    SetPixel( dc, i_pixel_col, i_pixel_row, black );
-                }
             }
         }
 
