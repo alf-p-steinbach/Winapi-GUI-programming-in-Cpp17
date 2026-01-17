@@ -1,1 +1,4 @@
 ﻿use_math: true
+markdown: kramdown
+kramdown:
+  math_engine: mathjax
