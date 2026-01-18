@@ -93,19 +93,8 @@ namespace app {
 
         // Display the math x and y axes first to make the graph appear to be “above”.
     
-        // Math y-axis:
-        winapi::draw_line( dc, {i_pixel_col_y_zero, 0}, {i_pixel_col_y_zero, h} );
-
-        // Add ticks on the math y-axis for every 5 math units.
-        for( double y = min_marker_y; y <= max_marker_y; y += 5 ) {
-            const int   row     = i_pixel_row_middle;
-            const int   col     = i_pixel_col_y_zero + int( scaling*y );
-
-            winapi::draw_line( dc, {col, row - 2}, {col, row + 2} );
-        }
-
         // Math x-axis:
-        winapi::draw_line( dc, {0, i_pixel_row_middle}, {w, i_pixel_row_middle} );
+        winapi::draw_line( dc, {i_pixel_col_y_zero, 0}, {i_pixel_col_y_zero, h} );
 
         // Add ticks on the math x-axis for every 5 math units.
         for( double x = -max_marker_x_magnitude; x <= max_marker_x_magnitude; x += 5 ) {
@@ -113,6 +102,17 @@ namespace app {
             const int   col     = i_pixel_col_y_zero;
 
             winapi::draw_line( dc, {col - 2, row}, {col + 2, row} );
+        }
+
+        // Math y-axis:
+        winapi::draw_line( dc, {0, i_pixel_row_middle}, {w, i_pixel_row_middle} );
+
+        // Add ticks on the math y-axis for every 5 math units.
+        for( double y = min_marker_y; y <= max_marker_y; y += 5 ) {
+            const int   row     = i_pixel_row_middle;
+            const int   col     = i_pixel_col_y_zero + int( scaling*y );
+
+            winapi::draw_line( dc, {col, row - 2}, {col, row + 2} );
         }
 
         // Plot the parabola.
