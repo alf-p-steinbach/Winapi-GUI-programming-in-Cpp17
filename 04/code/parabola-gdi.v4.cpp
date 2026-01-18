@@ -86,9 +86,9 @@ namespace app {
         const Nat       max_int_x_magnitude         = Nat( i_pixel_row_middle/scaling );
         const double    max_marker_x_magnitude      = 5*(max_int_x_magnitude/5);    // Symmetrical.
 
-        const Nat       min_int_y                   = Nat( minimum_y );
+        const int       min_int_y                   = int( minimum_y );
         const double    min_marker_y                = 5*(min_int_y/5);
-        const Nat       max_int_y                   = Nat( minimum_y + w/scaling );
+        const int       max_int_y                   = int( minimum_y + w/scaling );
         const double    max_marker_y                = 5*(max_int_y/5);
 
         // Display the math x and y axes first to make the graph appear to be “above”.
