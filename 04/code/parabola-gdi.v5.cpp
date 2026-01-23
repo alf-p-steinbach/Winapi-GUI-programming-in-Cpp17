@@ -126,7 +126,9 @@ namespace app {
         
     public:
         Coordinate_transformation( const Nat w, const Nat h ):
-            m_w( w ), m_h( h ), m_i_px_row_middle( h/2 )
+            m_w( w ),
+            m_h( h ),
+            m_i_px_row_middle( h/2 )
         {
             assert( m_w >= 0 );
             assert( m_h >= 0 );
@@ -135,6 +137,9 @@ namespace app {
         explicit Coordinate_transformation( in_<SIZE> size ):
             Coordinate_transformation( size.cx, size.cy )
         {}
+
+        auto w() const -> Nat { return m_w; }
+        auto h() const -> Nat { return m_h; }
 
         auto px_unit_for_math_x() const -> Px_point_vector { return {0, 1}; }         // ↓
         auto px_unit_for_math_y() const -> Px_point_vector { return {1, 0}; }         // →
@@ -172,16 +177,24 @@ namespace app {
         // Just for completeness, not used by client code in this program.
         auto math_minimum_y() const -> double { return minimum_y; }
         auto math_maximum_y() const -> double { return math_minimum_y() + m_w/scaling; }
+    };
 
+    class Coordinate_transformation_with_parameterization_on_axes:
+        public Coordinate_transformation
+    {
+        using Base = Coordinate_transformation;
 
-        //---------------------------------------------- Parameterization on axes:
-
+    public:
         struct Math_axis{ enum Enum: int { x, y }; };
         static constexpr Math_axis::Enum math_axes[] = { Math_axis::x, Math_axis::y };
+
+        using Base::Coordinate_transformation;      // Constructors.
 
         auto px_unit_for( const Math_axis::Enum axis ) const
             -> Px_point_vector
         { return (axis == Math_axis::x? px_unit_for_math_x() : px_unit_for_math_y()); }
+
+        using Base::px_from;
 
         auto px_from( const Math_axis::Enum axis, const double v ) const
             -> Px_point
@@ -201,12 +214,12 @@ namespace app {
 
         auto px_i_beyond( const Math_axis::Enum axis ) const
             -> Nat
-        { return (axis == Math_axis::x? m_h : m_w); }
+        { return (axis == Math_axis::x? h() : w()); }
     };
 
     class Painter
     {
-        using Ct = Coordinate_transformation;
+        using Ct = Coordinate_transformation_with_parameterization_on_axes;
 
         const HDC   m_dc;
         const Ct    m_xform;
@@ -215,15 +228,15 @@ namespace app {
 
         inline void add_math_axis_ticks( const Ct::Math_axis::Enum axis, const Nat tick_distance ) const;
 
+        inline void plot_the_parabola() const;
+        
+        inline void add_markers_on_the_graph() const;
+        
         inline void draw_axes_with_ticks() const
         {
             for( const auto axis: Ct::math_axes ) { draw_math_axis( axis ); }
             for( const auto axis: Ct::math_axes ) { add_math_axis_ticks( axis, 5 ); }
         }
-
-        inline void plot_the_parabola() const;
-
-        inline void add_markers_on_the_graph() const;
 
     public:
         Painter( const HDC dc, in_<SIZE> client_area_size ):
@@ -244,6 +257,7 @@ namespace app {
     {
         const double    first_v     = m_xform.math_minimum( axis );
         const double    last_v      = m_xform.math_maximum( axis );
+
         winapi::draw_line( m_dc, m_xform.px_from( axis, first_v ), m_xform.px_from( axis, last_v ) );
     }
 
@@ -263,7 +277,7 @@ namespace app {
 
     void Painter::plot_the_parabola() const
     {
-        // The graph is plotted to vertically just outside the client area, to avoid cutting it.
+        // The graph is plotted to just outside the client area.
         const auto x_axis = Ct::Math_axis::x;
         assert( m_xform.px_i_first( x_axis ) == 0 );
         const int i_px_beyond   = m_xform.px_i_beyond( x_axis );  assert( i_px_beyond > 0 );
