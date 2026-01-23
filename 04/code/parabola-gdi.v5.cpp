@@ -211,9 +211,15 @@ namespace app {
         const HDC   m_dc;
         const Ct    m_xform;
 
-        inline void draw_math_axis( const Ct::Math_axis::Enum   axis ) const;
+        inline void draw_math_axis( const Ct::Math_axis::Enum axis ) const;
 
         inline void add_math_axis_ticks( const Ct::Math_axis::Enum axis, const Nat tick_distance ) const;
+
+        inline void draw_axes_with_ticks() const
+        {
+            for( const auto axis: Ct::math_axes ) { draw_math_axis( axis ); }
+            for( const auto axis: Ct::math_axes ) { add_math_axis_ticks( axis, 5 ); }
+        }
 
         inline void plot_the_parabola() const;
 
@@ -228,9 +234,7 @@ namespace app {
         void paint() const
         {
             // Display the math x and y axes first to make the graph appear to be “above”.
-            for( const auto axis: Ct::math_axes ) { draw_math_axis( axis ); }
-            for( const auto axis: Ct::math_axes ) { add_math_axis_ticks( axis, 5 ); }
-
+            draw_axes_with_ticks();
             plot_the_parabola();
             add_markers_on_the_graph();
         }
