@@ -29,6 +29,46 @@ namespace cppm {                // "C++ machinery"
     { return Sign::Enum( (v > 0) - (v < 0) ); }
 }  // cppm
 
+namespace geometry{
+    using   cppm::in_;
+
+    template< class Point >         // Like `struct Point{ int x; int y; }`.
+    class Point_vector_
+    {
+        Point   m_pt;
+
+    public:
+        Point_vector_(): m_pt() {}
+        Point_vector_( in_<Point> pt ): m_pt( pt ) {}
+        Point_vector_( const int x, const int y ): m_pt{ x, y } {}
+
+        auto x() const -> int { return m_pt.x; }
+        auto y() const -> int { return m_pt.y; }
+
+        operator Point () const { return m_pt; }
+
+        friend auto operator*( const int n, in_<Point_vector_> vec )
+            -> Point_vector_
+        { return {n*vec.x(), n*vec.y()}; }
+
+        friend auto operator+( in_<Point> pt, in_<Point_vector_> vec )
+            -> Point
+        { return {pt.x + vec.x(), pt.y + vec.y()}; }
+
+        friend auto operator-( in_<Point> pt, in_<Point_vector_> vec )
+            -> Point
+        { return {pt.x - vec.x(), pt.y - vec.y()}; }
+
+        friend auto rotl( in_<Point_vector_> vec )
+            -> Point_vector_
+        { return {-vec.y(), vec.x()}; }
+
+        friend auto rotr( in_<Point_vector_> vec )
+            -> Point_vector_
+        { return {vec.y(), -vec.x()}; }
+    };
+}  // geometry
+
 namespace winapi {
     using   cppm::in_;
 
@@ -59,42 +99,6 @@ namespace winapi {
         draw_line_sans_endpoint( dc, from, to );
         set_px( dc, to );
     }
-
-    class Point_vector
-    {
-        POINT   m_pt;
-
-    public:
-        static_assert( sizeof( int ) == sizeof( long ) );   // For POINT. Windows-specific.
-
-        Point_vector( in_<POINT> pt = {} ): m_pt( pt ) {}
-        Point_vector( const int x, const int y ): m_pt{ x, y } {}
-
-        auto x() const -> int { return m_pt.x; }
-        auto y() const -> int { return m_pt.y; }
-
-        operator POINT () const { return m_pt; }
-    };
-
-    inline auto operator*( const int n, in_<Point_vector> vec )
-        -> Point_vector
-    { return {n*vec.x(), n*vec.y()}; }
-
-    inline auto operator+( in_<POINT> pt, in_<Point_vector> vec )
-        -> POINT
-    { return {pt.x + vec.x(), pt.y + vec.y()}; }
-
-    inline auto operator-( in_<POINT> pt, in_<Point_vector> vec )
-        -> POINT
-    { return {pt.x - vec.x(), pt.y - vec.y()}; }
-
-    inline auto rotl( in_<Point_vector> vec )
-        -> Point_vector
-    { return {-vec.y(), vec.x()}; }
-
-    inline auto rotr( in_<Point_vector> vec )
-        -> Point_vector
-    { return {vec.y(), -vec.x()}; }
 }  // winapi
 
 namespace app {
@@ -110,8 +114,8 @@ namespace app {
     auto f( const double x ) -> double { return x*x/4; }
 
     struct Math_point{ double x; double y; };
-    using Px_point = POINT;
-    using Px_point_vector = winapi::Point_vector;
+    using Px_point          = POINT;
+    using Px_point_vector   = geometry::Point_vector_<Px_point>;
 
     class Coordinate_transformation
     {
@@ -152,7 +156,7 @@ namespace app {
             -> int
         { return i_px_col_y_zero + int( scaling*y ); }
 
-        auto px_from( in_<Math_point> math ) const
+        auto px_pt_from( in_<Math_point> math ) const
             -> Px_point
         {
             const int px_x  = px_index_from_math_y( math.y );
@@ -160,7 +164,7 @@ namespace app {
             return {px_x, px_y};
         }
 
-        auto px_from_indices( const int i_px_for_x, const int i_px_for_y ) const
+        auto px_pt_from_indices( const int i_px_for_x, const int i_px_for_y ) const
             -> Px_point
         { return {i_px_for_y, i_px_for_x}; }
 
@@ -194,11 +198,11 @@ namespace app {
             -> Px_point_vector
         { return (axis == Math_axis::x? px_unit_for_math_x() : px_unit_for_math_y()); }
 
-        using Base::px_from;
+        using Base::px_pt_from;
 
-        auto px_from( const Math_axis::Enum axis, const double v ) const
+        auto px_pt_from( const Math_axis::Enum axis, const double v ) const
             -> Px_point
-        { return (axis == Math_axis::x? px_from( {v, 0} ) : px_from( {0, v} ) ); }
+        { return (axis == Math_axis::x? px_pt_from( {v, 0} ) : px_pt_from( {0, v} ) ); }
 
         auto math_minimum( const Math_axis::Enum axis ) const
             -> double
@@ -258,7 +262,7 @@ namespace app {
         const double    first_v     = m_xform.math_minimum( axis );
         const double    last_v      = m_xform.math_maximum( axis );
 
-        winapi::draw_line( m_dc, m_xform.px_from( axis, first_v ), m_xform.px_from( axis, last_v ) );
+        winapi::draw_line( m_dc, m_xform.px_pt_from( axis, first_v ), m_xform.px_pt_from( axis, last_v ) );
     }
 
     void Painter::add_math_axis_ticks( const Ct::Math_axis::Enum axis, const Nat tick_distance ) const
@@ -267,10 +271,10 @@ namespace app {
         const Nat td = tick_distance;
         const double    min_marker_v    = td*trunc( m_xform.math_minimum( axis )/td );
         const double    max_marker_v    = td*trunc( m_xform.math_maximum( axis )/td );
-        
+
         // Add ticks on the math y-axis for every td math units. Note: looping over integer values.
         for( double v = min_marker_v; v <= max_marker_v; v += td ) {
-            const Px_point pt = m_xform.px_from( axis, v );
+            const Px_point pt = m_xform.px_pt_from( axis, v );
             winapi::draw_line( m_dc, pt - tick_extent, pt + tick_extent );
         }
     }
@@ -287,8 +291,7 @@ namespace app {
             const double    x                   = m_xform.math_x_from_px_index( i_px_for_x );
             const double    y                   = f( x );
             const int       i_px_for_y          = m_xform.px_index_from_math_y( y );
-
-            points[i_px_for_x + 1] = m_xform.px_from_indices( i_px_for_x, i_px_for_y );
+            points[i_px_for_x + 1] = m_xform.px_pt_from_indices( i_px_for_x, i_px_for_y );
         }
         Polyline( m_dc, points.data(), int( points.size() ) );
     }
@@ -304,8 +307,7 @@ namespace app {
         const double    max_marker_x    = td*trunc( m_xform.math_maximum_x()/td );
         for( double x = min_marker_x; x <= max_marker_x; x += td ) {
             const double y = f( x );
-
-            const Px_point pt = m_xform.px_from( {x, y} );
+            const Px_point pt = m_xform.px_pt_from( {x, y} );
             const auto square_marker_rect = RECT{ pt.x - 2, pt.y - 2, pt.x + 3, pt.y + 3 };
             FillRect( m_dc, &square_marker_rect, black_brush );
         }
@@ -313,7 +315,8 @@ namespace app {
 
     void paint( const HWND window, const HDC dc )
     {
-        Painter( dc, winapi::extent_of( winapi::client_rect_of( window ) ) ).paint();
+        const SIZE client_area_size = winapi::extent_of( winapi::client_rect_of( window ) );
+        Painter( dc, client_area_size ).paint();
     }
 
     void on_wm_destroy( const HWND window )
