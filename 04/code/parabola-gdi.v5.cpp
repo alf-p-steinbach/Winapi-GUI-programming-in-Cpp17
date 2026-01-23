@@ -236,7 +236,7 @@ namespace app {
         
         inline void add_markers_on_the_graph() const;
         
-        inline void draw_axes_with_ticks() const
+        void draw_axes_with_ticks() const
         {
             for( const auto axis: Ct::math_axes ) { draw_math_axis( axis ); }
             for( const auto axis: Ct::math_axes ) { add_math_axis_ticks( axis, 5 ); }
