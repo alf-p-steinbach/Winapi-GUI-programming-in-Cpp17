@@ -211,62 +211,13 @@ namespace app {
         const HDC   m_dc;
         const Ct    m_xform;
 
-        void draw_math_axis( const Ct::Math_axis::Enum   axis ) const
-        {
-            const double    first_v     = m_xform.math_minimum( axis );
-            const double    last_v      = m_xform.math_maximum( axis );
-            winapi::draw_line( m_dc, m_xform.px_from( axis, first_v ), m_xform.px_from( axis, last_v ) );
-        }
+        inline void draw_math_axis( const Ct::Math_axis::Enum   axis ) const;
 
-        void add_math_axis_ticks( const Ct::Math_axis::Enum axis, const Nat tick_distance ) const
-        {
-            const Px_point_vector tick_extent = 2*rotl( m_xform.px_unit_for( axis ) );
-            const Nat td = tick_distance;
-            const double    min_marker_v    = td*trunc( m_xform.math_minimum( axis )/td );
-            const double    max_marker_v    = td*trunc( m_xform.math_maximum( axis )/td );
-            
-            // Add ticks on the math y-axis for every td math units. Note: looping over integer values.
-            for( double v = min_marker_v; v <= max_marker_v; v += td ) {
-                const Px_point pt = m_xform.px_from( axis, v );
-                winapi::draw_line( m_dc, pt - tick_extent, pt + tick_extent );
-            }
-        }
+        inline void add_math_axis_ticks( const Ct::Math_axis::Enum axis, const Nat tick_distance ) const;
 
-        void plot_the_parabola() const
-        {
-            // The graph is plotted to vertically just outside the client area, to avoid cutting it.
-            const auto x_axis = Ct::Math_axis::x;
-            assert( m_xform.px_i_first( x_axis ) == 0 );
-            const int i_px_beyond   = m_xform.px_i_beyond( x_axis );  assert( i_px_beyond > 0 );
-            const int n_px_indices  = i_px_beyond;
-            auto points = vector<POINT>( n_px_indices + 2 );    // 2 extra indices for plotting to outside.
-            for( int i_px_for_x = -1; i_px_for_x <= i_px_beyond; ++i_px_for_x ) {
-                const double    x                   = m_xform.math_x_from_px_index( i_px_for_x );
-                const double    y                   = f( x );
-                const int       i_px_for_y          = m_xform.px_index_from_math_y( y );
+        inline void plot_the_parabola() const;
 
-                points[i_px_for_x + 1] = m_xform.px_from_indices( i_px_for_x, i_px_for_y );
-            }
-            Polyline( m_dc, points.data(), int( points.size() ) );
-        }
-
-        void add_markers_on_the_graph() const
-        {
-            static const auto black_brush = static_cast<HBRUSH>( GetStockObject( BLACK_BRUSH ) );
-
-            // Add markers on the graph for every 5 math units of math x axis.
-            // Note: looping over integer values.
-            const Nat td = 5;
-            const double    min_marker_x    = td*trunc( m_xform.math_minimum_x()/td );
-            const double    max_marker_x    = td*trunc( m_xform.math_maximum_x()/td );
-            for( double x = min_marker_x; x <= max_marker_x; x += td ) {
-                const double y = f( x );
-
-                const Px_point pt = m_xform.px_from( {x, y} );
-                const auto square_marker_rect = RECT{ pt.x - 2, pt.y - 2, pt.x + 3, pt.y + 3 };
-                FillRect( m_dc, &square_marker_rect, black_brush );
-            }
-        }
+        inline void add_markers_on_the_graph() const;
 
     public:
         Painter( const HDC dc, in_<SIZE> client_area_size ):
@@ -284,6 +235,63 @@ namespace app {
             add_markers_on_the_graph();
         }
     };
+
+    void Painter::draw_math_axis( const Ct::Math_axis::Enum   axis ) const
+    {
+        const double    first_v     = m_xform.math_minimum( axis );
+        const double    last_v      = m_xform.math_maximum( axis );
+        winapi::draw_line( m_dc, m_xform.px_from( axis, first_v ), m_xform.px_from( axis, last_v ) );
+    }
+
+    void Painter::add_math_axis_ticks( const Ct::Math_axis::Enum axis, const Nat tick_distance ) const
+    {
+        const Px_point_vector tick_extent = 2*rotl( m_xform.px_unit_for( axis ) );
+        const Nat td = tick_distance;
+        const double    min_marker_v    = td*trunc( m_xform.math_minimum( axis )/td );
+        const double    max_marker_v    = td*trunc( m_xform.math_maximum( axis )/td );
+        
+        // Add ticks on the math y-axis for every td math units. Note: looping over integer values.
+        for( double v = min_marker_v; v <= max_marker_v; v += td ) {
+            const Px_point pt = m_xform.px_from( axis, v );
+            winapi::draw_line( m_dc, pt - tick_extent, pt + tick_extent );
+        }
+    }
+
+    void Painter::plot_the_parabola() const
+    {
+        // The graph is plotted to vertically just outside the client area, to avoid cutting it.
+        const auto x_axis = Ct::Math_axis::x;
+        assert( m_xform.px_i_first( x_axis ) == 0 );
+        const int i_px_beyond   = m_xform.px_i_beyond( x_axis );  assert( i_px_beyond > 0 );
+        const int n_px_indices  = i_px_beyond;
+        auto points = vector<POINT>( n_px_indices + 2 );    // 2 extra indices for plotting to outside.
+        for( int i_px_for_x = -1; i_px_for_x <= i_px_beyond; ++i_px_for_x ) {
+            const double    x                   = m_xform.math_x_from_px_index( i_px_for_x );
+            const double    y                   = f( x );
+            const int       i_px_for_y          = m_xform.px_index_from_math_y( y );
+
+            points[i_px_for_x + 1] = m_xform.px_from_indices( i_px_for_x, i_px_for_y );
+        }
+        Polyline( m_dc, points.data(), int( points.size() ) );
+    }
+
+    void Painter::add_markers_on_the_graph() const
+    {
+        static const auto black_brush = static_cast<HBRUSH>( GetStockObject( BLACK_BRUSH ) );
+
+        // Add markers on the graph for every 5 math units of math x axis.
+        // Note: looping over integer values.
+        const Nat td = 5;
+        const double    min_marker_x    = td*trunc( m_xform.math_minimum_x()/td );
+        const double    max_marker_x    = td*trunc( m_xform.math_maximum_x()/td );
+        for( double x = min_marker_x; x <= max_marker_x; x += td ) {
+            const double y = f( x );
+
+            const Px_point pt = m_xform.px_from( {x, y} );
+            const auto square_marker_rect = RECT{ pt.x - 2, pt.y - 2, pt.x + 3, pt.y + 3 };
+            FillRect( m_dc, &square_marker_rect, black_brush );
+        }
+    }
 
     void paint( const HWND window, const HDC dc )
     {
