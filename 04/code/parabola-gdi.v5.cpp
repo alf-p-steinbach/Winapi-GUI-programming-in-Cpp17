@@ -59,6 +59,7 @@ namespace winapi {
         draw_line_sans_endpoint( dc, from, to );
         set_px( dc, to );
     }
+
     class Point_vector
     {
         POINT   m_pt;
