@@ -142,8 +142,8 @@ namespace app {
             Coordinate_transformation( size.cx, size.cy )
         {}
 
-        auto w() const -> Nat { return m_w; }
-        auto h() const -> Nat { return m_h; }
+        auto px_w() const -> Nat { return m_w; }
+        auto px_h() const -> Nat { return m_h; }
 
         auto px_unit_for_math_x() const -> Px_point_vector { return {0, 1}; }         // ↓
         auto px_unit_for_math_y() const -> Px_point_vector { return {1, 0}; }         // →
@@ -218,7 +218,7 @@ namespace app {
 
         auto px_i_beyond( const Math_axis::Enum axis ) const
             -> Nat
-        { return (axis == Math_axis::x? h() : w()); }
+        { return (axis == Math_axis::x? px_h() : px_w()); }
     };
 
     class Painter
@@ -269,6 +269,7 @@ namespace app {
     {
         const Px_point_vector tick_extent = 2*rotl( m_xform.px_unit_for( axis ) );
         const Nat td = tick_distance;
+
         const double    min_marker_v    = td*trunc( m_xform.math_minimum( axis )/td );
         const double    max_marker_v    = td*trunc( m_xform.math_maximum( axis )/td );
 
@@ -282,10 +283,12 @@ namespace app {
     void Painter::plot_the_parabola() const
     {
         // The graph is plotted to just outside the client area.
-        const auto x_axis = Ct::Math_axis::x;
+        constexpr auto x_axis = Ct::Math_axis::x;
+
         assert( m_xform.px_i_first( x_axis ) == 0 );
         const int i_px_beyond   = m_xform.px_i_beyond( x_axis );  assert( i_px_beyond > 0 );
         const int n_px_indices  = i_px_beyond;
+
         auto points = vector<POINT>( n_px_indices + 2 );    // 2 extra indices for plotting to outside.
         for( int i_px_for_x = -1; i_px_for_x <= i_px_beyond; ++i_px_for_x ) {
             const double    x                   = m_xform.math_x_from_px_index( i_px_for_x );
@@ -298,13 +301,14 @@ namespace app {
 
     void Painter::add_markers_on_the_graph() const
     {
-        static const auto black_brush = static_cast<HBRUSH>( GetStockObject( BLACK_BRUSH ) );
-
         // Add markers on the graph for every 5 math units of math x axis.
-        // Note: looping over integer values.
         const Nat td = 5;
+        static const auto black_brush = static_cast<HBRUSH>( GetStockObject( BLACK_BRUSH ) );
+        
         const double    min_marker_x    = td*trunc( m_xform.math_minimum_x()/td );
         const double    max_marker_x    = td*trunc( m_xform.math_maximum_x()/td );
+        
+        // Note: looping over integer values.
         for( double x = min_marker_x; x <= max_marker_x; x += td ) {
             const double y = f( x );
             const Px_point pt = m_xform.px_pt_from( {x, y} );
