@@ -59,6 +59,41 @@ namespace winapi {
         draw_line_sans_endpoint( dc, from, to );
         set_px( dc, to );
     }
+    class Point_vector
+    {
+        POINT   m_pt;
+
+    public:
+        static_assert( sizeof( int ) == sizeof( long ) );   // For POINT. Windows-specific.
+
+        Point_vector( in_<POINT> pt = {} ): m_pt( pt ) {}
+        Point_vector( const int x, const int y ): m_pt{ x, y } {}
+
+        auto x() const -> int { return m_pt.x; }
+        auto y() const -> int { return m_pt.y; }
+
+        operator POINT () const { return m_pt; }
+    };
+
+    inline auto operator*( const int n, in_<Point_vector> vec )
+        -> Point_vector
+    { return {n*vec.x(), n*vec.y()}; }
+
+    inline auto operator+( in_<POINT> pt, in_<Point_vector> vec )
+        -> POINT
+    { return {pt.x + vec.x(), pt.y + vec.y()}; }
+
+    inline auto operator-( in_<POINT> pt, in_<Point_vector> vec )
+        -> POINT
+    { return {pt.x - vec.x(), pt.y - vec.y()}; }
+
+    inline auto rotl( in_<Point_vector> vec )
+        -> Point_vector
+    { return {-vec.y(), vec.x()}; }
+
+    inline auto rotr( in_<Point_vector> vec )
+        -> Point_vector
+    { return {vec.y(), -vec.x()}; }
 }  // winapi
 
 namespace app {
@@ -75,42 +110,7 @@ namespace app {
 
     struct Math_point{ double x; double y; };
     using Px_point = POINT;
-
-    class Px_point_vector
-    {
-        POINT   m_pt;
-
-    public:
-        static_assert( sizeof( int ) == sizeof( long ) );   // For POINT. Windows-specific.
-
-        Px_point_vector( in_<POINT> pt = {} ): m_pt( pt ) {}
-        Px_point_vector( const int x, const int y ): m_pt{ x, y } {}
-
-        auto x() const -> int { return m_pt.x; }
-        auto y() const -> int { return m_pt.y; }
-
-        operator POINT () const { return m_pt; }
-    };
-
-    inline auto operator*( const int n, in_<Px_point_vector> vec )
-        -> Px_point_vector
-    { return {n*vec.x(), n*vec.y()}; }
-
-    inline auto operator+( in_<POINT> pt, in_<Px_point_vector> vec )
-        -> POINT
-    { return {pt.x + vec.x(), pt.y + vec.y()}; }
-
-    inline auto operator-( in_<POINT> pt, in_<Px_point_vector> vec )
-        -> POINT
-    { return {pt.x - vec.x(), pt.y - vec.y()}; }
-
-    inline auto rotl( in_<Px_point_vector> vec )
-        -> Px_point_vector
-    { return {-vec.y(), vec.x()}; }
-
-    inline auto rotr( in_<Px_point_vector> vec )
-        -> Px_point_vector
-    { return {vec.y(), -vec.x()}; }
+    using Px_point_vector = winapi::Point_vector;
 
     class Coordinate_transformation
     {
