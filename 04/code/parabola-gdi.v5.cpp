@@ -160,7 +160,7 @@ namespace app {
             -> Px_index
         { return Px_index( i_px_col_y_zero + int( scaling*y ) ); }
 
-        auto math_x_from_px_index( const Px_index i_px ) const
+        auto math_x_from( const Px_index i_px ) const
             -> double
         {
             const int relative_row_index = int( i_px ) - m_i_px_row_middle;
@@ -295,7 +295,7 @@ namespace app {
 
         auto points = vector<POINT>( n_px_indices + 2 );    // 2 extra indices for plotting to outside.
         for( auto i_px_for_x = Px_index( -1 ); i_px_for_x <= i_px_beyond ; ++i_px_for_x ) {
-            const double        x           = m_xform.math_x_from_px_index( i_px_for_x );
+            const double        x           = m_xform.math_x_from( i_px_for_x );
             const double        y           = f( x );
             const Px_index      i_px_for_y  = m_xform.px_index_from_math_y( y );
 
