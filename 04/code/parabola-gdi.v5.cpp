@@ -119,6 +119,7 @@ namespace app {
 
     enum class Px_index: int {};                    // Pixel indexing for a math axis.
     void operator++( Px_index& v ) { v = Px_index( int( v ) + 1 ); }
+    auto predecessor_of( Px_index v ) -> Px_index { return Px_index( int( v ) - 1 ); }
     auto operator<=( Px_index a, Px_index b ) -> bool { return int( a ) <= int( b ); }
 
     class Coordinate_transformation
@@ -217,7 +218,7 @@ namespace app {
 
         auto px_i_first( const Math_axis::Enum ) const
             -> Px_index
-        { return Px_index(); }
+        { return Px_index( 0 ); }
 
         auto px_i_beyond( const Math_axis::Enum axis ) const
             -> Px_index
@@ -288,13 +289,17 @@ namespace app {
         // The graph is plotted to just outside the client area.
         constexpr auto x_axis = Ct::Math_axis::x;
 
-        assert( m_xform.px_i_first( x_axis ) == Px_index( 0 ) );
-        const Px_index      i_px_beyond   = m_xform.px_i_beyond( x_axis );
+        const Px_index      i_px_first      = m_xform.px_i_first( x_axis );
+        const Px_index      i_px_beyond     = m_xform.px_i_beyond( x_axis );
+        const auto          n_px_indices    = int( i_px_beyond );
+        assert( int( i_px_first ) == 0 );
         assert( int( i_px_beyond ) > 0 );
-        const auto           n_px_indices  = int( i_px_beyond );
 
         auto points = vector<POINT>( n_px_indices + 2 );    // 2 extra indices for plotting to outside.
-        for( auto i_px_for_x = Px_index( -1 ); i_px_for_x <= i_px_beyond ; ++i_px_for_x ) {
+        for(    Px_index i_px_for_x = predecessor_of( i_px_first );
+                i_px_for_x <= i_px_beyond;
+                ++i_px_for_x
+                ) {
             const double        x           = m_xform.math_x_from( i_px_for_x );
             const double        y           = f( x );
             const Px_index      i_px_for_y  = m_xform.px_index_from_math_y( y );
@@ -312,7 +317,7 @@ namespace app {
         
         const double    min_marker_x    = td*trunc( m_xform.math_minimum_x()/td );
         const double    max_marker_x    = td*trunc( m_xform.math_maximum_x()/td );
-        
+
         // Note: looping over integer values.
         for( double x = min_marker_x; x <= max_marker_x; x += td ) {
             const double y = f( x );
