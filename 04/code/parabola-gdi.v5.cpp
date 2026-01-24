@@ -113,9 +113,13 @@ namespace app {
 
     auto f( const double x ) -> double { return x*x/4; }
 
-    struct Math_point{ double x; double y; };
-    using Px_point          = POINT;
+    using Math_point        = struct{ double x; double y; };
+    using Px_point          = POINT;                // Pixel location.
     using Px_point_vector   = geometry::Point_vector_<Px_point>;
+
+    enum class Px_index: int {};                    // Pixel indexing for a math axis.
+    void operator++( Px_index& v ) { v = Px_index( int( v ) + 1 ); }
+    auto operator<=( Px_index a, Px_index b ) -> bool { return int( a ) <= int( b ); }
 
     class Coordinate_transformation
     {
@@ -127,7 +131,7 @@ namespace app {
         const Nat   m_w;
         const Nat   m_h;
         const Nat   m_i_px_row_middle;
-        
+
     public:
         Coordinate_transformation( const Nat w, const Nat h ):
             m_w( w ),
@@ -149,36 +153,35 @@ namespace app {
         auto px_unit_for_math_y() const -> Px_point_vector { return {1, 0}; }         // →
 
         auto px_index_from_math_x( const double x ) const
-            -> int
-        { return m_i_px_row_middle + int( scaling*x ); }
+            -> Px_index
+        { return Px_index( m_i_px_row_middle + int( scaling*x ) ); }
 
         auto px_index_from_math_y( const double y ) const
-            -> int
-        { return i_px_col_y_zero + int( scaling*y ); }
+            -> Px_index
+        { return Px_index( i_px_col_y_zero + int( scaling*y ) ); }
+
+        auto math_x_from_px_index( const Px_index i_px ) const
+            -> double
+        {
+            const int relative_row_index = int( i_px ) - m_i_px_row_middle;
+            return 1.0*relative_row_index/scaling;
+        }
+
+        auto px_pt_from_indices( const Px_index i_px_for_x, const Px_index i_px_for_y ) const
+            -> Px_point
+        { return {int( i_px_for_y ), int( i_px_for_x )}; }
 
         auto px_pt_from( in_<Math_point> math ) const
             -> Px_point
         {
-            const int px_x  = px_index_from_math_y( math.y );
-            const int px_y  = px_index_from_math_x( math.x );
+            const auto px_x = int( px_index_from_math_y( math.y ) );
+            const auto px_y = int( px_index_from_math_x( math.x ) );
             return {px_x, px_y};
-        }
-
-        auto px_pt_from_indices( const int i_px_for_x, const int i_px_for_y ) const
-            -> Px_point
-        { return {i_px_for_y, i_px_for_x}; }
-
-        auto math_x_from_px_index( const int i_px ) const
-            -> double
-        {
-            const int relative_row_index = i_px - m_i_px_row_middle;
-            return 1.0*relative_row_index/scaling;
         }
 
         auto math_minimum_x() const -> double { return -m_i_px_row_middle/scaling; }
         auto math_maximum_x() const -> double { return math_minimum_x() + m_h/scaling; }
 
-        // Just for completeness, not used by client code in this program.
         auto math_minimum_y() const -> double { return minimum_y; }
         auto math_maximum_y() const -> double { return math_minimum_y() + m_w/scaling; }
     };
@@ -213,12 +216,12 @@ namespace app {
         { return (axis == Math_axis::x? math_maximum_x() : math_maximum_y()); }
 
         auto px_i_first( const Math_axis::Enum ) const
-            -> Nat
-        { return 0; }
+            -> Px_index
+        { return Px_index(); }
 
         auto px_i_beyond( const Math_axis::Enum axis ) const
-            -> Nat
-        { return (axis == Math_axis::x? px_h() : px_w()); }
+            -> Px_index
+        { return Px_index( axis == Math_axis::x? px_h() : px_w() ); }
     };
 
     class Painter
@@ -285,16 +288,18 @@ namespace app {
         // The graph is plotted to just outside the client area.
         constexpr auto x_axis = Ct::Math_axis::x;
 
-        assert( m_xform.px_i_first( x_axis ) == 0 );
-        const int i_px_beyond   = m_xform.px_i_beyond( x_axis );  assert( i_px_beyond > 0 );
-        const int n_px_indices  = i_px_beyond;
+        assert( m_xform.px_i_first( x_axis ) == Px_index( 0 ) );
+        const Px_index      i_px_beyond   = m_xform.px_i_beyond( x_axis );
+        assert( int( i_px_beyond ) > 0 );
+        const auto           n_px_indices  = int( i_px_beyond );
 
         auto points = vector<POINT>( n_px_indices + 2 );    // 2 extra indices for plotting to outside.
-        for( int i_px_for_x = -1; i_px_for_x <= i_px_beyond; ++i_px_for_x ) {
-            const double    x                   = m_xform.math_x_from_px_index( i_px_for_x );
-            const double    y                   = f( x );
-            const int       i_px_for_y          = m_xform.px_index_from_math_y( y );
-            points[i_px_for_x + 1] = m_xform.px_pt_from_indices( i_px_for_x, i_px_for_y );
+        for( auto i_px_for_x = Px_index( -1 ); i_px_for_x <= i_px_beyond ; ++i_px_for_x ) {
+            const double        x           = m_xform.math_x_from_px_index( i_px_for_x );
+            const double        y           = f( x );
+            const Px_index      i_px_for_y  = m_xform.px_index_from_math_y( y );
+
+            points[int( i_px_for_x ) + 1] = m_xform.px_pt_from_indices( i_px_for_x, i_px_for_y );
         }
         Polyline( m_dc, points.data(), int( points.size() ) );
     }
