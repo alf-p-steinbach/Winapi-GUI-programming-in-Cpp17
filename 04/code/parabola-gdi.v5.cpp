@@ -261,12 +261,12 @@ namespace app {
         }
     };
 
-    void Painter::draw_math_axis( const Ct::Math_axis::Enum   axis ) const
+    void Painter::draw_math_axis( const Ct::Math_axis::Enum axis ) const
     {
-        const double    first_v     = m_xform.math_minimum( axis );
-        const double    last_v      = m_xform.math_maximum( axis );
-
-        winapi::draw_line( m_dc, m_xform.px_pt_from( axis, first_v ), m_xform.px_pt_from( axis, last_v ) );
+        const auto& _ = m_xform;
+        const double    first_v     = _.math_minimum( axis );
+        const double    last_v      = _.math_maximum( axis );
+        winapi::draw_line( m_dc, _.px_pt_from( axis, first_v ), _.px_pt_from( axis, last_v ) );
     }
 
     void Painter::add_math_axis_ticks( const Ct::Math_axis::Enum axis, const Nat tick_distance ) const
