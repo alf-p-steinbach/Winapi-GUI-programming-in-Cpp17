@@ -271,15 +271,16 @@ namespace app {
 
     void Painter::add_math_axis_ticks( const Ct::Math_axis::Enum axis, const Nat tick_distance ) const
     {
-        const Px_point_vector tick_extent = 2*rotl( m_xform.px_unit_for( axis ) );
+        const auto& _ = m_xform;
+        const Px_point_vector tick_extent = 2*rotl( _.px_unit_for( axis ) );
         const Nat td = tick_distance;
 
-        const double    min_marker_v    = td*trunc( m_xform.math_minimum( axis )/td );
-        const double    max_marker_v    = td*trunc( m_xform.math_maximum( axis )/td );
+        const double    min_marker_v    = td*trunc( _.math_minimum( axis )/td );
+        const double    max_marker_v    = td*trunc( _.math_maximum( axis )/td );
 
         // Add ticks on the math y-axis for every td math units. Note: looping over integer values.
         for( double v = min_marker_v; v <= max_marker_v; v += td ) {
-            const Px_point pt = m_xform.px_pt_from( axis, v );
+            const Px_point pt = _.px_pt_from( axis, v );
             winapi::draw_line( m_dc, pt - tick_extent, pt + tick_extent );
         }
     }
@@ -287,10 +288,11 @@ namespace app {
     void Painter::plot_the_parabola() const
     {
         // The graph is plotted to just outside the client area.
+        const auto& _ = m_xform;
         constexpr auto x_axis = Ct::Math_axis::x;
 
-        const Px_index      i_px_first      = m_xform.px_i_first( x_axis );
-        const Px_index      i_px_beyond     = m_xform.px_i_beyond( x_axis );
+        const Px_index      i_px_first      = _.px_i_first( x_axis );
+        const Px_index      i_px_beyond     = _.px_i_beyond( x_axis );
         const auto          n_px_indices    = int( i_px_beyond );
         assert( int( i_px_first ) == 0 );
         assert( int( i_px_beyond ) > 0 );
@@ -300,11 +302,11 @@ namespace app {
                 i_px_for_x <= i_px_beyond;
                 ++i_px_for_x
                 ) {
-            const double        x           = m_xform.math_x_from( i_px_for_x );
+            const double        x           = _.math_x_from( i_px_for_x );
             const double        y           = f( x );
-            const Px_index      i_px_for_y  = m_xform.px_index_from_math_y( y );
+            const Px_index      i_px_for_y  = _.px_index_from_math_y( y );
 
-            points[int( i_px_for_x ) + 1] = m_xform.px_pt_from_indices( i_px_for_x, i_px_for_y );
+            points[int( i_px_for_x ) + 1] = _.px_pt_from_indices( i_px_for_x, i_px_for_y );
         }
         Polyline( m_dc, points.data(), int( points.size() ) );
     }
@@ -312,16 +314,17 @@ namespace app {
     void Painter::add_markers_on_the_graph() const
     {
         // Add markers on the graph for every 5 math units of math x axis.
+        const auto& _ = m_xform;
         const Nat td = 5;
         static const auto black_brush = static_cast<HBRUSH>( GetStockObject( BLACK_BRUSH ) );
         
-        const double    min_marker_x    = td*trunc( m_xform.math_minimum_x()/td );
-        const double    max_marker_x    = td*trunc( m_xform.math_maximum_x()/td );
+        const double    min_marker_x    = td*trunc( _.math_minimum_x()/td );
+        const double    max_marker_x    = td*trunc( _.math_maximum_x()/td );
 
         // Note: looping over integer values.
         for( double x = min_marker_x; x <= max_marker_x; x += td ) {
             const double y = f( x );
-            const Px_point pt = m_xform.px_pt_from( {x, y} );
+            const Px_point pt = _.px_pt_from( {x, y} );
             const auto square_marker_rect = RECT{ pt.x - 2, pt.y - 2, pt.x + 3, pt.y + 3 };
             FillRect( m_dc, &square_marker_rect, black_brush );
         }
