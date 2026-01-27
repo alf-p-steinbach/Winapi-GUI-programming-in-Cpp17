@@ -32,10 +32,21 @@ namespace cppm {                // "C++ machinery"
 namespace geometry{
     using   cppm::in_;
 
-    template< class Point >         // Like `struct Point{ int x; int y; }`.
+    struct Handedness{ enum Enum: int { like_math, opposite_math }; };
+
+    // Template parameter `Point` should be like `struct Point{ int x; int y; }`.
+    template< class Point, Handedness::Enum handedness = Handedness::like_math >
     class Point_vector_
     {
         Point   m_pt;
+
+        friend auto math_rotl( in_<Point_vector_> vec )
+            -> Point_vector_
+        { return {-vec.y(), vec.x()}; }
+
+        friend auto math_rotr( in_<Point_vector_> vec )
+            -> Point_vector_
+        { return {vec.y(), -vec.x()}; }
 
     public:
         Point_vector_(): m_pt() {}
@@ -61,11 +72,11 @@ namespace geometry{
 
         friend auto rotl( in_<Point_vector_> vec )
             -> Point_vector_
-        { return {-vec.y(), vec.x()}; }
+        { return (handedness == Handedness::like_math? math_rotl( vec ) : math_rotr( vec )); }
 
         friend auto rotr( in_<Point_vector_> vec )
             -> Point_vector_
-        { return {vec.y(), -vec.x()}; }
+        { return (handedness == Handedness::like_math? math_rotr( vec ) : math_rotl( vec )); }
     };
 }  // geometry
 
@@ -104,6 +115,8 @@ namespace winapi {
 namespace app {
     using   cppm::Nat, cppm::in_, cppm::Process_exit_code, cppm::sign_of;
 
+    using   geometry::Handedness, geometry::Point_vector_;
+
     using   std::vector;            // <vector>
 
     using   std::trunc;             // <cmath>
@@ -115,11 +128,11 @@ namespace app {
 
     using Math_point        = struct{ double x; double y; };
     using Px_point          = POINT;                // Pixel location.
-    using Px_point_vector   = geometry::Point_vector_<Px_point>;
+    using Px_point_vector   = Point_vector_<Px_point, Handedness::opposite_math>;
 
     enum class Px_index: int {};                    // Pixel indexing for a math axis.
     void operator++( Px_index& v ) { v = Px_index( int( v ) + 1 ); }
-    auto predecessor_of( Px_index v ) -> Px_index { return Px_index( int( v ) - 1 ); }
+    auto value_before( Px_index v ) -> Px_index { return Px_index( int( v ) - 1 ); }
     auto operator<=( Px_index a, Px_index b ) -> bool { return int( a ) <= int( b ); }
 
     class Coordinate_transformation
@@ -198,7 +211,7 @@ namespace app {
 
         using Base::Coordinate_transformation;      // Constructors.
 
-        auto px_unit_for( const Math_axis::Enum axis ) const
+        auto px_unit_vector_for( const Math_axis::Enum axis ) const
             -> Px_point_vector
         { return (axis == Math_axis::x? px_unit_for_math_x() : px_unit_for_math_y()); }
 
@@ -272,15 +285,15 @@ namespace app {
     void Painter::add_math_axis_ticks( const Ct::Math_axis::Enum axis, const Nat tick_distance ) const
     {
         const auto& _ = m_xform;
-        const Px_point_vector tick_extent = 2*rotl( _.px_unit_for( axis ) );
-        const Nat td = tick_distance;
+        const Px_point_vector   tick_extent     = 2*rotl( _.px_unit_vector_for( axis ) );
+        const Nat               td              = tick_distance;
 
-        const double    min_marker_v    = td*trunc( _.math_minimum( axis )/td );
-        const double    max_marker_v    = td*trunc( _.math_maximum( axis )/td );
+        const double    min_marker_value    = td*trunc( _.math_minimum( axis )/td );
+        const double    max_marker_value    = td*trunc( _.math_maximum( axis )/td );
 
         // Add ticks on the math y-axis for every td math units. Note: looping over integer values.
-        for( double v = min_marker_v; v <= max_marker_v; v += td ) {
-            const Px_point pt = _.px_pt_from( axis, v );
+        for( double value = min_marker_value; value <= max_marker_value; value += td ) {
+            const Px_point pt = _.px_pt_from( axis, value );
             winapi::draw_line( m_dc, pt - tick_extent, pt + tick_extent );
         }
     }
@@ -294,11 +307,12 @@ namespace app {
         const Px_index      i_px_first      = _.px_i_first( x_axis );
         const Px_index      i_px_beyond     = _.px_i_beyond( x_axis );
         const auto          n_px_indices    = int( i_px_beyond );
+
         assert( int( i_px_first ) == 0 );
         assert( int( i_px_beyond ) > 0 );
 
         auto points = vector<POINT>( n_px_indices + 2 );    // 2 extra indices for plotting to outside.
-        for(    Px_index i_px_for_x = predecessor_of( i_px_first );
+        for(    Px_index    i_px_for_x      = value_before( i_px_first );
                 i_px_for_x <= i_px_beyond;
                 ++i_px_for_x
                 ) {
