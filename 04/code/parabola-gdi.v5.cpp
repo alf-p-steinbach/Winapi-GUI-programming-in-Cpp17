@@ -127,10 +127,11 @@ namespace app {
     auto f( const double x ) -> double { return x*x/4; }
 
     using Math_point        = struct{ double x; double y; };
-    using Px_point          = POINT;                // Pixel location.
+    static_assert( sizeof( long ) == sizeof( int ) );   // Holds in Windows.
+    using Px_point          = POINT;                    // Pixel location.
     using Px_point_vector   = Point_vector_<Px_point, Handedness::opposite_math>;
 
-    enum class Px_index: int {};                    // Pixel indexing for a math axis.
+    enum class Px_index: int {};                        // Pixel indexing for a math axis.
     void operator++( Px_index& v ) { v = Px_index( int( v ) + 1 ); }
     auto value_before( Px_index v ) -> Px_index { return Px_index( int( v ) - 1 ); }
     auto operator<=( Px_index a, Px_index b ) -> bool { return int( a ) <= int( b ); }
