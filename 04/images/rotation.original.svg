@@ -24,8 +24,8 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="2.1543544"
-     inkscape:cx="349.98884"
-     inkscape:cy="84.247977"
+     inkscape:cx="208.41511"
+     inkscape:cy="97.24491"
      inkscape:window-width="2568"
      inkscape:window-height="1025"
      inkscape:window-x="581"
@@ -34,45 +34,6 @@
      inkscape:current-layer="svg1" />
   <defs
      id="defs1">
-    <marker
-       style="overflow:visible"
-       id="Dot"
-       refX="0"
-       refY="0"
-       orient="auto"
-       inkscape:stockid="Dot"
-       markerWidth="0.5"
-       markerHeight="0.5"
-       viewBox="0 0 1 1"
-       inkscape:isstock="true"
-       inkscape:collect="always"
-       preserveAspectRatio="xMidYMid">
-      <path
-         transform="scale(0.5)"
-         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
-         d="M 5,0 C 5,2.76 2.76,5 0,5 -2.76,5 -5,2.76 -5,0 c 0,-2.76 2.3,-5 5,-5 2.76,0 5,2.24 5,5 z"
-         sodipodi:nodetypes="sssss"
-         id="path17" />
-    </marker>
-    <marker
-       style="overflow:visible"
-       id="Triangle"
-       refX="0"
-       refY="0"
-       orient="auto-start-reverse"
-       inkscape:stockid="Triangle arrow"
-       markerWidth="1"
-       markerHeight="1"
-       viewBox="0 0 1 1"
-       inkscape:isstock="true"
-       inkscape:collect="always"
-       preserveAspectRatio="xMidYMid">
-      <path
-         transform="scale(0.5)"
-         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
-         d="M 5.77,0 -2.88,5 V -5 Z"
-         id="path135" />
-    </marker>
     <marker
        style="overflow:visible"
        id="marker56"
@@ -179,19 +140,6 @@
      sodipodi:arc-type="arc"
      d="M 47.44857,12.303972 A 26.285101,26.285101 0 0 1 45.706716,46.437126"
      sodipodi:open="true" />
-  <path
-     style="fill:none;stroke:#cccccc;stroke-width:0.529;stroke-dasharray:1.058, 1.058;stroke-dashoffset:0;marker-start:url(#Dot);marker-end:url(#Triangle)"
-     id="path5"
-     sodipodi:type="arc"
-     sodipodi:cx="26.799528"
-     sodipodi:cy="27.886063"
-     sodipodi:rx="10.924476"
-     sodipodi:ry="10.924476"
-     sodipodi:start="0.041897435"
-     sodipodi:end="1.3813414"
-     sodipodi:open="true"
-     sodipodi:arc-type="arc"
-     d="M 37.714417,28.343636 A 10.924476,10.924476 0 0 1 28.856865,38.615067" />
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
@@ -366,9 +314,4 @@
      style="fill:none;fill-opacity:1;stroke:#999999;stroke-width:0.376;stroke-dasharray:none"
      d="m 136.70599,31.436157 3.25957,-2.511007 -2.4562,-3.21196"
      id="path57-6" />
-  <path
-     style="fill:none;stroke:#cccccc;stroke-width:0.529;stroke-dasharray:1.058, 1.058;stroke-dashoffset:0;marker-end:url(#Triangle)"
-     d="m 154.90637,13.3805 -4.76131,32.500591"
-     id="path10"
-     sodipodi:nodetypes="cc" />
 </svg>
