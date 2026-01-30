@@ -309,9 +309,6 @@ namespace app {
         const Px_index      i_px_beyond     = _.px_i_beyond( x_axis );
         const auto          n_px_indices    = int( i_px_beyond );
 
-        assert( int( i_px_first ) == 0 );
-        assert( int( i_px_beyond ) > 0 );
-
         auto points = vector<POINT>( n_px_indices + 2 );    // 2 extra indices for plotting to outside.
         for(    Px_index    i_px_for_x      = value_before( i_px_first );
                 i_px_for_x <= i_px_beyond;
