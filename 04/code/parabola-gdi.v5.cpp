@@ -115,8 +115,6 @@ namespace winapi {
 namespace app {
     using   cppm::Nat, cppm::in_, cppm::Process_exit_code, cppm::sign_of;
 
-    using   geometry::Handedness, geometry::Point_vector_;
-
     using   std::vector;            // <vector>
 
     using   std::trunc;             // <cmath>
@@ -126,125 +124,132 @@ namespace app {
 
     auto f( const double x ) -> double { return x*x/4; }
 
-    using Math_point        = struct{ double x; double y; };
-    static_assert( sizeof( long ) == sizeof( int ) );   // Holds in Windows.
-    using Px_point          = POINT;                    // Pixel location.
-    using Px_point_vector   = Point_vector_<Px_point, Handedness::opposite_math>;
+    namespace coordinate {
+        using   geometry::Handedness, geometry::Point_vector_;
 
-    enum class Px_index: int {};                        // Pixel indexing for a math axis.
-    void operator++( Px_index& v ) { v = Px_index( int( v ) + 1 ); }
-    auto value_before( Px_index v ) -> Px_index { return Px_index( int( v ) - 1 ); }
-    auto operator<=( Px_index a, Px_index b ) -> bool { return int( a ) <= int( b ); }
+        using Math_point        = struct{ double x; double y; };
+        static_assert( sizeof( long ) == sizeof( int ) );   // Holds in Windows.
+        using Px_point          = POINT;                    // Pixel location.
+        using Px_point_vector   = Point_vector_<Px_point, Handedness::opposite_math>;
 
-    class Coordinate_transformation
-    {
-        // Scaling so that e.g. math x = -15 maps to px row -150.
-        static constexpr double     scaling         = 10;
-        static constexpr double     minimum_y       = -2.0; // In display’s left edge.
-        static constexpr Nat        i_px_col_y_zero = int( scaling*( 0.0 - minimum_y ) );
+        enum class Px_index: int {};                        // Pixel indexing for a math axis.
+        void operator++( Px_index& v ) { v = Px_index( int( v ) + 1 ); }
+        auto value_before( Px_index v ) -> Px_index { return Px_index( int( v ) - 1 ); }
+        auto operator<=( Px_index a, Px_index b ) -> bool { return int( a ) <= int( b ); }
 
-        const Nat   m_w;
-        const Nat   m_h;
-        const Nat   m_i_px_row_middle;
-
-    public:
-        Coordinate_transformation( const Nat w, const Nat h ):
-            m_w( w ),
-            m_h( h ),
-            m_i_px_row_middle( h/2 )
+        class Transform
         {
-            assert( m_w >= 0 );
-            assert( m_h >= 0 );
-        }
+            // Scaling so that e.g. math x = -15 maps to px row -150.
+            static constexpr double     scaling         = 10;
+            static constexpr double     minimum_y       = -2.0; // In display’s left edge.
+            static constexpr Nat        i_px_col_y_zero = int( scaling*( 0.0 - minimum_y ) );
 
-        explicit Coordinate_transformation( in_<SIZE> size ):
-            Coordinate_transformation( size.cx, size.cy )
-        {}
+            const Nat   m_w;
+            const Nat   m_h;
+            const Nat   m_i_px_row_middle;
 
-        auto px_w() const -> Nat { return m_w; }
-        auto px_h() const -> Nat { return m_h; }
+        public:
+            Transform( const Nat w, const Nat h ):
+                m_w( w ),
+                m_h( h ),
+                m_i_px_row_middle( h/2 )
+            {
+                assert( m_w >= 0 );
+                assert( m_h >= 0 );
+            }
 
-        auto px_unit_for_math_x() const -> Px_point_vector { return {0, 1}; }         // ↓
-        auto px_unit_for_math_y() const -> Px_point_vector { return {1, 0}; }         // →
+            explicit Transform( in_<SIZE> size ):
+                Transform( size.cx, size.cy )
+            {}
 
-        auto px_index_from_math_x( const double x ) const
-            -> Px_index
-        { return Px_index( m_i_px_row_middle + int( scaling*x ) ); }
+            auto px_w() const -> Nat { return m_w; }
+            auto px_h() const -> Nat { return m_h; }
 
-        auto px_index_from_math_y( const double y ) const
-            -> Px_index
-        { return Px_index( i_px_col_y_zero + int( scaling*y ) ); }
+            auto px_unit_for_math_x() const -> Px_point_vector { return {0, 1}; }         // ↓
+            auto px_unit_for_math_y() const -> Px_point_vector { return {1, 0}; }         // →
 
-        auto math_x_from( const Px_index i_px ) const
-            -> double
+            auto px_index_from_math_x( const double x ) const
+                -> Px_index
+            { return Px_index( m_i_px_row_middle + int( scaling*x ) ); }
+
+            auto px_index_from_math_y( const double y ) const
+                -> Px_index
+            { return Px_index( i_px_col_y_zero + int( scaling*y ) ); }
+
+            auto math_x_from( const Px_index i_px ) const
+                -> double
+            {
+                const int relative_row_index = int( i_px ) - m_i_px_row_middle;
+                return 1.0*relative_row_index/scaling;
+            }
+
+            auto px_pt_from_indices( const Px_index i_px_for_x, const Px_index i_px_for_y ) const
+                -> Px_point
+            { return {int( i_px_for_y ), int( i_px_for_x )}; }
+
+            auto px_pt_from( in_<Math_point> math ) const
+                -> Px_point
+            {
+                const auto px_x = int( px_index_from_math_y( math.y ) );
+                const auto px_y = int( px_index_from_math_x( math.x ) );
+                return {px_x, px_y};
+            }
+
+            auto math_minimum_x() const -> double { return -m_i_px_row_middle/scaling; }
+            auto math_maximum_x() const -> double { return math_minimum_x() + m_h/scaling; }
+
+            auto math_minimum_y() const -> double { return minimum_y; }
+            auto math_maximum_y() const -> double { return math_minimum_y() + m_w/scaling; }
+        };
+
+        class Axis_relative_transform:
+            public Transform
         {
-            const int relative_row_index = int( i_px ) - m_i_px_row_middle;
-            return 1.0*relative_row_index/scaling;
-        }
+            using Base = Transform;
 
-        auto px_pt_from_indices( const Px_index i_px_for_x, const Px_index i_px_for_y ) const
-            -> Px_point
-        { return {int( i_px_for_y ), int( i_px_for_x )}; }
+        public:
+            struct Math_axis{ enum Enum: int { x, y }; };
+            static constexpr Math_axis::Enum math_axes[] = { Math_axis::x, Math_axis::y };
 
-        auto px_pt_from( in_<Math_point> math ) const
-            -> Px_point
-        {
-            const auto px_x = int( px_index_from_math_y( math.y ) );
-            const auto px_y = int( px_index_from_math_x( math.x ) );
-            return {px_x, px_y};
-        }
+            using Base::Transform;      // Constructors.
 
-        auto math_minimum_x() const -> double { return -m_i_px_row_middle/scaling; }
-        auto math_maximum_x() const -> double { return math_minimum_x() + m_h/scaling; }
+            auto px_unit_vector_for( const Math_axis::Enum axis ) const
+                -> Px_point_vector
+            { return (axis == Math_axis::x? px_unit_for_math_x() : px_unit_for_math_y()); }
 
-        auto math_minimum_y() const -> double { return minimum_y; }
-        auto math_maximum_y() const -> double { return math_minimum_y() + m_w/scaling; }
-    };
+            using Base::px_pt_from;
 
-    class Coordinate_transformation_with_parameterization_on_axes:
-        public Coordinate_transformation
-    {
-        using Base = Coordinate_transformation;
+            auto px_pt_from( const Math_axis::Enum axis, const double v ) const
+                -> Px_point
+            { return (axis == Math_axis::x? px_pt_from( {v, 0} ) : px_pt_from( {0, v} ) ); }
 
-    public:
-        struct Math_axis{ enum Enum: int { x, y }; };
-        static constexpr Math_axis::Enum math_axes[] = { Math_axis::x, Math_axis::y };
+            auto math_minimum( const Math_axis::Enum axis ) const
+                -> double
+            { return (axis == Math_axis::x? math_minimum_x() : math_minimum_y()); }
 
-        using Base::Coordinate_transformation;      // Constructors.
+            auto math_maximum( const Math_axis::Enum axis ) const
+                -> double
+            { return (axis == Math_axis::x? math_maximum_x() : math_maximum_y()); }
 
-        auto px_unit_vector_for( const Math_axis::Enum axis ) const
-            -> Px_point_vector
-        { return (axis == Math_axis::x? px_unit_for_math_x() : px_unit_for_math_y()); }
+            auto px_i_first( const Math_axis::Enum ) const
+                -> Px_index
+            { return Px_index( 0 ); }
 
-        using Base::px_pt_from;
-
-        auto px_pt_from( const Math_axis::Enum axis, const double v ) const
-            -> Px_point
-        { return (axis == Math_axis::x? px_pt_from( {v, 0} ) : px_pt_from( {0, v} ) ); }
-
-        auto math_minimum( const Math_axis::Enum axis ) const
-            -> double
-        { return (axis == Math_axis::x? math_minimum_x() : math_minimum_y()); }
-
-        auto math_maximum( const Math_axis::Enum axis ) const
-            -> double
-        { return (axis == Math_axis::x? math_maximum_x() : math_maximum_y()); }
-
-        auto px_i_first( const Math_axis::Enum ) const
-            -> Px_index
-        { return Px_index( 0 ); }
-
-        auto px_i_beyond( const Math_axis::Enum axis ) const
-            -> Px_index
-        { return Px_index( axis == Math_axis::x? px_h() : px_w() ); }
-    };
+            auto px_i_beyond( const Math_axis::Enum axis ) const
+                -> Px_index
+            { return Px_index( axis == Math_axis::x? px_h() : px_w() ); }
+        };
+    }  // coordinate
 
     class Painter
     {
-        using Ct = Coordinate_transformation_with_parameterization_on_axes;
+        using Ct                = coordinate::Axis_relative_transform;      // Coordinate Transform
+        using Px_point          = coordinate::Px_point;
+        using Px_point_vector   = coordinate::Px_point_vector;
+        using Px_index          = coordinate::Px_index;
 
         const HDC   m_dc;
-        const Ct    m_xform;
+        const Ct    m_transform;
 
         inline void draw_math_axis( const Ct::Math_axis::Enum axis ) const;
 
@@ -263,7 +268,7 @@ namespace app {
     public:
         Painter( const HDC dc, in_<SIZE> client_area_size ):
             m_dc( dc ),
-            m_xform( client_area_size )
+            m_transform( client_area_size )
         {}
 
         void paint() const
@@ -277,7 +282,7 @@ namespace app {
 
     void Painter::draw_math_axis( const Ct::Math_axis::Enum axis ) const
     {
-        const auto& _ = m_xform;
+        const auto& _ = m_transform;
         const double    first_v     = _.math_minimum( axis );
         const double    last_v      = _.math_maximum( axis );
         winapi::draw_line( m_dc, _.px_pt_from( axis, first_v ), _.px_pt_from( axis, last_v ) );
@@ -285,7 +290,7 @@ namespace app {
 
     void Painter::add_math_axis_ticks( const Ct::Math_axis::Enum axis, const Nat tick_distance ) const
     {
-        const auto& _ = m_xform;
+        const auto& _ = m_transform;
         const Px_point_vector   tick_extent     = 2*rotl( _.px_unit_vector_for( axis ) );
         const Nat               td              = tick_distance;
 
@@ -302,7 +307,7 @@ namespace app {
     void Painter::plot_the_parabola() const
     {
         // The graph is plotted to just outside the client area.
-        const auto& _ = m_xform;
+        const auto& _ = m_transform;
         constexpr auto x_axis = Ct::Math_axis::x;
 
         const Px_index      i_px_first      = _.px_i_first( x_axis );
@@ -326,7 +331,7 @@ namespace app {
     void Painter::add_markers_on_the_graph() const
     {
         // Add markers on the graph for every 5 math units of math x axis.
-        const auto& _ = m_xform;
+        const auto& _ = m_transform;
         const Nat td = 5;
         static const auto black_brush = static_cast<HBRUSH>( GetStockObject( BLACK_BRUSH ) );
         
