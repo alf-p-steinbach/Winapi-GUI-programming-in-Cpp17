@@ -4,6 +4,7 @@
 #endif
 #include <windows.h>
 
+#include <algorithm>
 #include <initializer_list> // Formally required for initializer-list in range based `for`.
 #include <iterator>
 #include <vector>
@@ -127,17 +128,21 @@ namespace app {
     namespace coordinate {
         using   geometry::Handedness, geometry::Point_vector_;
 
+        using   std::max, std::min;         // <algorithm>
+
         using Math_point        = struct{ double x; double y; };
         static_assert( sizeof( long ) == sizeof( int ) );   // Holds in Windows.
         using Px_point          = POINT;                    // Pixel location.
         using Px_point_vector   = Point_vector_<Px_point, Handedness::opposite_math>;
 
-        enum class Px_index: int {};                        // Pixel indexing for a math axis.
-        void operator++( Px_index& v ) { v = Px_index( int( v ) + 1 ); }
-        auto value_before( Px_index v ) -> Px_index { return Px_index( int( v ) - 1 ); }
-        auto operator<=( Px_index a, Px_index b ) -> bool { return int( a ) <= int( b ); }
+        enum class Px_index: int {};    // Pixel indexing for a math axis.
+        void operator++( Px_index& v )                          { v = Px_index( int( v ) + 1 ); }
+        auto value_before( Px_index v )             -> Px_index { return Px_index( int( v ) - 1 ); }
+        auto operator<=( Px_index a, Px_index b )   -> bool     { return int( a ) <= int( b ); }
 
-        class Transform
+        // Math ↔ pixel indices.
+        // Holds all knowledge of the graph orientation.
+        class Indices_transform
         {
             // Scaling so that e.g. math x = -15 maps to px row -150.
             static constexpr double     scaling         = 10;
@@ -149,7 +154,7 @@ namespace app {
             const Nat   m_i_px_row_middle;
 
         public:
-            Transform( const Nat w, const Nat h ):
+            Indices_transform( const Nat w, const Nat h ):
                 m_w( w ),
                 m_h( h ),
                 m_i_px_row_middle( h/2 )
@@ -158,15 +163,16 @@ namespace app {
                 assert( m_h >= 0 );
             }
 
-            explicit Transform( in_<SIZE> size ):
-                Transform( size.cx, size.cy )
-            {}
+            explicit Indices_transform( in_<SIZE> size ): Indices_transform( size.cx, size.cy ) {}
 
-            auto px_w() const -> Nat { return m_w; }
-            auto px_h() const -> Nat { return m_h; }
+
+            //------------------------------- Axis 1 pixel length vectors:
 
             auto px_unit_for_math_x() const -> Px_point_vector { return {0, 1}; }         // ↓
             auto px_unit_for_math_y() const -> Px_point_vector { return {1, 0}; }         // →
+
+
+            //------------------------------- Indices:
 
             auto px_index_from_math_x( const double x ) const
                 -> Px_index
@@ -176,42 +182,72 @@ namespace app {
                 -> Px_index
             { return Px_index( i_px_col_y_zero + int( scaling*y ) ); }
 
+            auto px_index_beyond_x_axis() const -> Px_index { return Px_index( m_h ); }
+            auto px_index_beyond_y_axis() const -> Px_index { return Px_index( m_w ); }
+
             auto math_x_from( const Px_index i_px ) const
                 -> double
             {
-                const int relative_row_index = int( i_px ) - m_i_px_row_middle;
-                return 1.0*relative_row_index/scaling;
+                const int i = int( i_px );
+                return 1.0*(i - m_i_px_row_middle)/scaling;
             }
 
+            auto math_y_from( const Px_index i_px ) const
+                -> double
+            {
+                const int i = int( i_px );
+                return 1.0*(i - i_px_col_y_zero)/scaling;
+            }
+
+            // This is an optimization in the sense that it could be expressed in terms of the unit
+            // vectors, without knowledge of the graph orientation, at the cost of some operations.
+            // But mostly it’s here because a gut feeling that it should be expressed with scalars.
             auto px_pt_from_indices( const Px_index i_px_for_x, const Px_index i_px_for_y ) const
                 -> Px_point
             { return {int( i_px_for_y ), int( i_px_for_x )}; }
+        };
+
+        // Math coordinate ↔ pixel coordinate:
+        class Coordinates_transform: public Indices_transform
+        {
+            using Base = Indices_transform;
+
+            const Math_point    m_math_start  =     // The math point for pixel (0, 0).
+            {
+                math_x_from( Px_index( 0 ) ), math_y_from( Px_index( 0 ) )
+            };
+            const Math_point    m_math_beyond =     // The math point for pixel (beyond, beyond).
+            {
+                math_x_from( px_index_beyond_x_axis() ), math_y_from( px_index_beyond_y_axis() )
+            };
+
+        public:
+            using Base::Base;       // Constructors.
 
             auto px_pt_from( in_<Math_point> math ) const
                 -> Px_point
             {
-                const auto px_x = int( px_index_from_math_y( math.y ) );
-                const auto px_y = int( px_index_from_math_x( math.x ) );
-                return {px_x, px_y};
+                const auto  i_px_x  = px_index_from_math_x( math.x );
+                const auto  i_px_y  = px_index_from_math_y( math.y );
+                return px_pt_from_indices( i_px_x, i_px_y );
             }
 
-            auto math_minimum_x() const -> double { return -m_i_px_row_middle/scaling; }
-            auto math_maximum_x() const -> double { return math_minimum_x() + m_h/scaling; }
+            auto math_minimum_x() const -> double { return min( m_math_start.x, m_math_beyond.x ); }
+            auto math_maximum_x() const -> double { return max( m_math_start.x, m_math_beyond.x ); }
 
-            auto math_minimum_y() const -> double { return minimum_y; }
-            auto math_maximum_y() const -> double { return math_minimum_y() + m_w/scaling; }
+            auto math_minimum_y() const -> double { return min( m_math_start.y, m_math_beyond.y ); }
+            auto math_maximum_y() const -> double { return max( m_math_start.y, m_math_beyond.y ); }
         };
 
-        class Axis_relative_transform:
-            public Transform
+        class Axis_relative_transform: public Coordinates_transform
         {
-            using Base = Transform;
+            using Base = Coordinates_transform;
 
         public:
+            using Base::Base;       // Constructors.
+
             struct Math_axis{ enum Enum: int { x, y }; };
             static constexpr Math_axis::Enum math_axes[] = { Math_axis::x, Math_axis::y };
-
-            using Base::Transform;      // Constructors.
 
             auto px_unit_vector_for( const Math_axis::Enum axis ) const
                 -> Px_point_vector
@@ -237,7 +273,12 @@ namespace app {
 
             auto px_i_beyond( const Math_axis::Enum axis ) const
                 -> Px_index
-            { return Px_index( axis == Math_axis::x? px_h() : px_w() ); }
+            {
+                return Px_index( axis == Math_axis::x
+                    ? px_index_beyond_x_axis()
+                    : px_index_beyond_y_axis()
+                    );
+            }
         };
     }  // coordinate
 
