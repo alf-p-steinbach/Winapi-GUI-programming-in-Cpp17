@@ -224,6 +224,8 @@ namespace app {
         public:
             using Base::Base;       // Constructors.
 
+            using Base::px_pt_from_indices;
+
             auto px_pt_from( in_<Math_point> math ) const
                 -> Px_point
             {
@@ -253,7 +255,7 @@ namespace app {
                 -> Px_point_vector
             { return (axis == Math_axis::x? px_unit_for_math_x() : px_unit_for_math_y()); }
 
-            using Base::px_pt_from;
+            using Base::px_pt_from;     // Unshadowing.
 
             auto px_pt_from( const Math_axis::Enum axis, const double v ) const
                 -> Px_point
@@ -274,9 +276,8 @@ namespace app {
             auto px_i_beyond( const Math_axis::Enum axis ) const
                 -> Px_index
             {
-                return Px_index( axis == Math_axis::x
-                    ? px_index_beyond_x_axis()
-                    : px_index_beyond_y_axis()
+                return Px_index(
+                    axis == Math_axis::x? px_index_beyond_x_axis() : px_index_beyond_y_axis()
                     );
             }
         };
